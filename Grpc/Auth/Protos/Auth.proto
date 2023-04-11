@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "Grpc.Auth.Protos";
+
+service AuthProtoService{
+	rpc GetUser (GetUserRequest) returns (UserModel);
+}
+
+
+message GetUserRequest{
+	string userToken=1;
+}
+
+message UserModel{
+	string userId=1;
+}
