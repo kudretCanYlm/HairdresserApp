@@ -1,5 +1,8 @@
 using Events.Stores.EfCore;
 using Events.Stores.MongoDb;
+using Grpc.Auth;
+using Grpc.Auth.ClientServices;
+using Grpc.Auth.Protos;
 using Microsoft.EntityFrameworkCore;
 using Swagger;
 using User.Application.Extensions;
@@ -13,25 +16,29 @@ internal class Program
 		var builder = WebApplication.CreateBuilder(args);
 
 		// Add services to the container.
+		builder.Services.AddAuthGrpc(builder.Configuration["AuthUrl"]);
 		builder.Services.UseDomain(typeof(Program));
-		
+
 		builder.Services.UseUserInfrastructure(x => x.UseSqlServer(builder.Configuration.GetConnectionString("UserServiceDb")));
 		builder.Services.UseUserApplication();
 		//will change add mongo db
+
 		builder.Services.AddMongoDbEventStore(builder.Configuration);
 
 		builder.Services.AddControllers();
 		// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddMySwagger(builder.Configuration);
-
 		var app = builder.Build();
+
 
 		// Configure the HTTP request pipeline.
 		if (app.Environment.IsDevelopment())
 		{
 			app.UseMySwagger(app.Configuration);
 		}
+
+		app.UseAuthMiddleware();
 
 		app.UseHttpsRedirection();
 
