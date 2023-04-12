@@ -1,10 +1,12 @@
 ﻿using Events.User;
+using Grpc.Auth;
 using Grpc.Auth.ClientServices;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetDevPack.Mediator;
 using Newtonsoft.Json;
+using System.Security.Claims;
 using User.Application.Dto.User;
 using User.Application.Interfaces.User;
 
@@ -56,8 +58,8 @@ namespace User.Api.Controllers
 		[HttpGet,Route("melih")]
 		public async Task<IActionResult> GetMelih()
 		{
-			//var user = this.HttpContext.User;
-			return Ok("melih bey");
+			var user = HttpContext.GetCurrentUserId();
+			return Ok(user);
 		}
 	}
 }
