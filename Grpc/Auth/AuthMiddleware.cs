@@ -40,7 +40,7 @@ namespace Grpc.Auth
 					{
 						var claims = new[]
 						{
-							new Claim("UserId", user.UserId),
+							new Claim(ClaimTypes.NameIdentifier, user.UserId),
 							new Claim(ClaimTypes.Role, "Admin")
 						};
 						var identity = new ClaimsIdentity(claims, "Bearer");
