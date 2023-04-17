@@ -5,12 +5,14 @@ using Microsoft.Extensions.Logging;
 using Serilog.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Elastic.Apm.NetCoreAll;
+using Microsoft.Extensions.Hosting;
+using Serilog.Sinks.Elasticsearch;
 
 namespace MEES.Infrastructure.Logging
 {
 	public static class LoggingExtensions
 	{
-		public static Logger AddLogging(IConfiguration configuration)
+		public static Logger AddMyLogging(IConfiguration configuration)
 		{
 			var logger = new LoggerConfiguration()
 				.Enrich.FromLogContext()
@@ -22,7 +24,7 @@ namespace MEES.Infrastructure.Logging
 			return logger;
 		}
 
-		public static IApplicationBuilder UseLogging(this IApplicationBuilder app, IConfiguration Configuration, ILoggerFactory loggerFactory)
+		public static IApplicationBuilder UseMyLogging(this IApplicationBuilder app, IConfiguration Configuration, ILoggerFactory loggerFactory)
 		{
 			app.UseAllElasticApm(Configuration);
 
