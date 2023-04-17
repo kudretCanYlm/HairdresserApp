@@ -19,12 +19,14 @@ namespace User.Api.Controllers
 		private readonly IUserAppService _userAppService;
 		private readonly IMediatorHandler _mediator;
 		private readonly AuthGrpcService authGrpcService;
+		private readonly ILogger<UserController> _logger;
 
-		public UserController(IUserAppService userAppService, IMediatorHandler mediator, AuthGrpcService authGrpcService)
+		public UserController(IUserAppService userAppService, IMediatorHandler mediator, AuthGrpcService authGrpcService, ILogger<UserController> logger)
 		{
 			_userAppService = userAppService;
 			_mediator = mediator;
 			this.authGrpcService = authGrpcService;
+			_logger = logger;
 		}
 
 		[HttpGet]
@@ -60,6 +62,13 @@ namespace User.Api.Controllers
 		{
 			var user = HttpContext.GetCurrentUserId();
 			return Ok(user);
+		}
+
+		[HttpGet,Route("melih2")]
+		public async Task<IActionResult> GetMelih2()
+		{
+			_logger.LogError("hahta");
+			return Ok("asd");
 		}
 	}
 }
