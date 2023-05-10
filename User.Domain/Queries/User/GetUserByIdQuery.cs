@@ -4,7 +4,7 @@ using User.Domain.Models;
 
 namespace User.Domain.Queries.User
 {
-	public class GetUserByIdQuery:Command,IRequest<UserModel>
+	public class GetUserByIdQuery:IRequest<UserModel>
 	{
 		public GetUserByIdQuery(Guid id)
 		{

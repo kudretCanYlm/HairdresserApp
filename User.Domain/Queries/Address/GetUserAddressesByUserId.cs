@@ -4,7 +4,7 @@ using User.Domain.Models;
 
 namespace User.Domain.Queries.Address
 {
-	public class GetUserAddressesByUserId:Command,IRequest<IEnumerable<AddressModel>>
+	public class GetUserAddressesByUserId: IRequest<IEnumerable<AddressModel>>
 	{
 		public GetUserAddressesByUserId(Guid userId)
 		{

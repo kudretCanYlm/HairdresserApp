@@ -4,7 +4,7 @@ using User.Domain.Models;
 
 namespace User.Domain.Queries.User
 {
-    public class GetAllUsersQuery :Command, IRequest<IEnumerable<UserModel>>
+    public class GetAllUsersQuery :IRequest<IEnumerable<UserModel>>
     {
         public GetAllUsersQuery()
         {
