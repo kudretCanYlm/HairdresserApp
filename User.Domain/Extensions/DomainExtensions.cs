@@ -1,6 +1,8 @@
 ﻿using Events.Bus;
 using Events.User;
 using Events.User.Address;
+using Filters.Behaviours;
+using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +15,7 @@ using User.Domain.Mapper;
 using User.Domain.Models;
 using User.Domain.Queries.Address;
 using User.Domain.Queries.User;
+using User.Domain.Validations.User;
 
 namespace User.Domain.Extensions
 {
@@ -24,9 +27,8 @@ namespace User.Domain.Extensions
 			services.AddScoped<IMediatorHandler, InMemoryBus>();
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(startup.GetTypeInfo().Assembly));
 
-			//queries
-
-
+			services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+			services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 			// Domain - Events
 			services.AddScoped<INotificationHandler<UserCreatedEvent>, UserEventHandler>();
 			services.AddScoped<INotificationHandler<UserDeletedEvent>, UserEventHandler>();
