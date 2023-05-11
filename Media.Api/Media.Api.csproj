@@ -8,7 +8,18 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Media.Application\Media.Application.csproj" />
+    <ProjectReference Include="..\Media.Domain\Media.Domain.csproj" />
+    <ProjectReference Include="..\Media.Infrastructure\Media.Infrastructure.csproj" />
+    <ProjectReference Include="..\Swagger\Swagger.csproj" />
   </ItemGroup>
 
 </Project>
