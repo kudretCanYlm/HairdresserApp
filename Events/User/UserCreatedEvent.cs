@@ -6,12 +6,13 @@ namespace Events.User
 	{
 		public UserCreatedEvent()
 		{
-
+			
 		}
 
 		public UserCreatedEvent(Guid id, string name, string surname, string email, string password, string phone)
 		{
 			Id = id;
+			AggregateId= id;
 			Name = name;
 			Surname = surname;
 			Email = email;

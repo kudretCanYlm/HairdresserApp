@@ -11,6 +11,7 @@ namespace Events.User
 
 		public UserUpdatedEvent(Guid id, string name, string surname, string email, string password, string phone)
 		{
+			AggregateId = id;
 			Id = id;
 			Name = name;
 			Surname = surname;
