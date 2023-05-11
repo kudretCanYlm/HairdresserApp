@@ -6,12 +6,14 @@ namespace Events.Media
 	{
 		public MediaCreatedEvent()
 		{
-
+			
 		}
 
 		public MediaCreatedEvent(Guid id, string fileExtension, byte[] mediaData, string customType, Guid ımageOwnerId)
 		{
+			
 			Id = id;
+			AggregateId = id;
 			FileExtension = fileExtension;
 			MediaData = mediaData;
 			CustomType = customType;

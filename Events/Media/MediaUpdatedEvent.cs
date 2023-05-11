@@ -14,13 +14,14 @@ namespace Events.Media
 
 		}
 
-		public MediaUpdatedEvent(Guid id, string fileExtension, byte[] mediaData, string customType, Guid ımageOwnerId)
+		public MediaUpdatedEvent(Guid id, string fileExtension, byte[] mediaData, string customType, Guid imageOwnerId)
 		{
+			AggregateId = id;
 			Id = id;
 			FileExtension = fileExtension;
 			MediaData = mediaData;
 			CustomType = customType;
-			ImageOwnerId = ımageOwnerId;
+			ImageOwnerId = imageOwnerId;
 		}
 
 		public Guid Id { get; set; }
