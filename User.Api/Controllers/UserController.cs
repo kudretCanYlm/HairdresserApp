@@ -29,27 +29,18 @@ namespace User.Api.Controllers
 			_logger = logger;
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> Index()
+		[HttpPost, AllowAnonymous]
+		public async Task<IActionResult> Index([FromBody] CreateUserDto createUserDto)
 		{
 
-			var user = new CreateUserDto
-			{
-				Email = "Test@gmail.com",
-				Name = "Melih",
-				Surname = "Bey",
-				Password = "123454",
-				Phone = "5467821456"
-			};
-			var result = await _userAppService.CreateAsync(user);
+			var result = await _userAppService.CreateAsync(createUserDto);
 
-			//var Event = new UserDeletedEvent(Guid.Parse("60169185-2ba3-4aff-8e26-08db2ed52c4d"));
-			//await _mediator.PublishEvent(Event);
-			var history =await _userAppService.GetAllHistoryAsync(Guid.Parse("64169185-2ba3-4aff-8e26-08db2ed52c4d"));
 
-			return Created("Test",history);
+			var history = await _userAppService.GetAllHistoryAsync(Guid.Parse("47c02319-a2c4-40c8-9e75-08db516ff33e"));
+
+			return Created("Test", history);
 		}
-		[HttpGet,Route("tokentest/{token}"),AllowAnonymous]
+		[HttpGet, Route("tokentest/{token}"), AllowAnonymous]
 		public async Task<IActionResult> Gettomen(string token)
 		{
 			var user = await authGrpcService.CheckTokenRefreshAndUserId(token);
@@ -57,18 +48,34 @@ namespace User.Api.Controllers
 			return Ok(user);
 		}
 
-		[HttpGet,Route("melih")]
+		[HttpDelete, Route("delete"), AllowAnonymous]
+		public async Task<IActionResult> Del(Guid id)
+		{
+			var result=await _userAppService.RemoveAsync(id);
+
+			return Ok(result);
+		}
+
+		[HttpGet, Route("melih")]
 		public async Task<IActionResult> GetMelih()
 		{
 			var user = HttpContext.GetCurrentUserId();
 			return Ok(user);
 		}
 
-		[HttpGet,Route("melih2")]
+		[HttpGet, Route("melih2")]
 		public async Task<IActionResult> GetMelih2()
 		{
 			_logger.LogError("hahta");
 			return Ok("asd");
+		}
+
+		[HttpGet, Route("test13"), AllowAnonymous]
+		public async Task<IActionResult> GEtTest()
+		{
+			var user = await _userAppService.GetAllAsync();
+
+			return Ok(user);
 		}
 	}
 }
