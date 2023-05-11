@@ -7,6 +7,7 @@ using User.Application.Interfaces.User;
 using User.Domain.Commands.User;
 using User.Application.Dto.User;
 using User.Domain.Queries.User;
+using MediatR;
 
 namespace User.Application.Services
 {
@@ -14,24 +15,26 @@ namespace User.Application.Services
 	{
 		private readonly IMapper _mapper;
 		private readonly IEventStoreRepository _eventStoreRepository;
-		private readonly IMediatorHandler _mediator;
+		private readonly IMediatorHandler _mediatorHandler;
+		private readonly IMediator _mediator;
 
-		public UserAppService(IMapper mapper, IEventStoreRepository eventStoreRepository, IMediatorHandler mediator)
+		public UserAppService(IMapper mapper, IEventStoreRepository eventStoreRepository, IMediatorHandler mediatorHandler, IMediator mediator)
 		{
 			_mapper = mapper;
 			_eventStoreRepository = eventStoreRepository;
+			_mediatorHandler = mediatorHandler;
 			_mediator = mediator;
 		}
 
 		public async Task<ValidationResult> CreateAsync(CreateUserDto createUserDto)
 		{
 			var createUserCommand = _mapper.Map<CreateUserCommand>(createUserDto);
-			return await _mediator.SendCommand(createUserCommand);
+			return await _mediatorHandler.SendCommand(createUserCommand);
 		}
 
 		public async Task<IEnumerable<UserDto>> GetAllAsync()
 		{
-			var users = await _mediator.SendCommand(new GetAllUsersQuery());
+			var users = await _mediator.Send(new GetAllUsersQuery());
 			return _mapper.Map<IEnumerable<UserDto>>(users);
 		}
 
@@ -42,20 +45,20 @@ namespace User.Application.Services
 
 		public async Task<UserDto> GetByIdAsync(Guid id)
 		{
-			var user = await _mediator.SendCommand(new GetUserByIdQuery(id));
+			var user = await _mediator.Send(new GetUserByIdQuery(id));
 			return _mapper.Map<UserDto>(user);
 		}
 
 		public async Task<ValidationResult> RemoveAsync(Guid id)
 		{
 			var deleteUserCommand=new DeleteUserCommand(id);
-			return await _mediator.SendCommand(deleteUserCommand);
+			return await _mediatorHandler.SendCommand(deleteUserCommand);
 		}
 
 		public async Task<ValidationResult> UpdateAsync(UpdateUserDto updateUserDto)
 		{
 			var updateUserCommand=_mapper.Map<UpdateUserCommand>(updateUserDto);
-			return await _mediator.SendCommand(updateUserCommand);
+			return await _mediatorHandler.SendCommand(updateUserCommand);
 		}
 
 		public void Dispose()
