@@ -10,7 +10,7 @@ namespace User.Application.Extensions
 	{
 		public static void UseUserApplication(this IServiceCollection services)
 		{
-			services.AddAutoMapper(typeof(CommandToDto), typeof(DtoToCommand));
+			services.AddAutoMapper(typeof(ModelToDto), typeof(DtoToCommand));
 			services.AddScoped<IUserAppService,UserAppService>();
 			services.AddScoped<IAddressAppService, AddressAppService>();
 
