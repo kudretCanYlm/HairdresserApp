@@ -8,85 +8,79 @@ using User.Domain.Models;
 
 namespace User.Domain.Commands.User
 {
-    //will addvaldation middleware
-    public class UserCommandHandler : CommandHandler,
-                                    IRequestHandler<CreateUserCommand, ValidationResult>,
-                                    IRequestHandler<DeleteUserCommand, ValidationResult>,
-                                    IRequestHandler<UpdateUserCommand, ValidationResult>
-    {
-        private readonly IUserRepository userRepository;
-        private readonly IMapper mapper;
+	public class UserCommandHandler : CommandHandler,
+									IRequestHandler<CreateUserCommand, ValidationResult>,
+									IRequestHandler<DeleteUserCommand, ValidationResult>,
+									IRequestHandler<UpdateUserCommand, ValidationResult>
+	{
+		private readonly IUserRepository userRepository;
+		private readonly IMapper mapper;
 
-        public UserCommandHandler(IUserRepository userRepository, IMapper mapper)
-        {
-            this.userRepository = userRepository;
-            this.mapper = mapper;
-        }
+		public UserCommandHandler(IUserRepository userRepository, IMapper mapper)
+		{
+			this.userRepository = userRepository;
+			this.mapper = mapper;
+		}
 
-        public async Task<ValidationResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
-        {
-            var user = mapper.Map<UserModel>(request);
+		public async Task<ValidationResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+		{
+			var user = mapper.Map<UserModel>(request);
 
-            userRepository.Add(user);
+			if (await userRepository.GetByEmail(request.Email) != null)
+			{
+				AddError("The user e-mail has already been taken.");
+				return ValidationResult;
+			}
+			
+			userRepository.Add(user);
+			user.AddDomainEvent(mapper.Map<UserCreatedEvent>(user));
 
-            if (await userRepository.GetByEmail(request.Email) != null)
-            {
-                AddError("The user e-mail has already been taken.");
-                return ValidationResult;
-            }
+			
+			return await Commit(userRepository.UnitOfWork);
+		}
 
-            user.AddDomainEvent(mapper.Map<UserCreatedEvent>(user));
+		public async Task<ValidationResult> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+		{
+			var user = await userRepository.GetById(request.Id);
 
-            userRepository.Add(user);
+			if (user is null)
+			{
+				AddError("The customer doesn't exists.");
+				return ValidationResult;
+			}
 
-            return await Commit(userRepository.UnitOfWork);
-        }
+			user.AddDomainEvent(mapper.Map<UserDeletedEvent>(user));
 
-        public async Task<ValidationResult> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
-        {
-            var user = await userRepository.GetById(request.Id);
+			userRepository.Delete(user);
 
-            if (user is null)
-            {
-                AddError("The customer doesn't exists.");
-                return ValidationResult;
-            }
+			return await Commit(userRepository.UnitOfWork);
 
-            user.AddDomainEvent(mapper.Map<UserDeletedEvent>(user));
+		}
 
-            userRepository.Delete(user);
+		public async Task<ValidationResult> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+		{
+			var user = await userRepository.GetById(request.Id);
 
-            return await Commit(userRepository.UnitOfWork);
+			user = mapper.Map(request, user);
 
-        }
+			if (user == null)
+			{
+				AddError("user not found");
+				return ValidationResult;
+			}
 
-        public async Task<ValidationResult> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
-        {
-            var user = await userRepository.GetById(request.Id);
+			if (await userRepository.IsEmailAlreadyUsing(request.Email))
+			{
+				AddError("The user e-mail has already been taken.");
+				return ValidationResult;
+			}
 
-            user = mapper.Map(request, user);
+			user.AddDomainEvent(mapper.Map<UserUpdatedEvent>(user));
 
-            if (user == null)
-            {
-                AddError("user not found");
-                return ValidationResult;
-            }
-            else
-            {
-                if (await userRepository.IsEmailAlreadyUsing(request.Email))
-                {
-                    AddError("The user e-mail has already been taken.");
-                    return ValidationResult;
-                }
-            }
+			userRepository.Update(user);
 
+			return await Commit(userRepository.UnitOfWork);
 
-            user.AddDomainEvent(mapper.Map<UserUpdatedEvent>(user));
-
-            userRepository.Update(user);
-
-            return await Commit(userRepository.UnitOfWork);
-
-        }
-    }
+		}
+	}
 }
