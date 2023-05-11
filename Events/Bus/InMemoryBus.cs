@@ -23,10 +23,10 @@ namespace Events.Bus
 
 		public async Task PublishEvent<T>(T @event) where T : Event
 		{
-			if (!@event.MessageType.Equals("DomainNotification"))
+			//if (!@event.MessageType.Equals("DomainNotification"))
 				_eventStore?.Save(@event);
 
-			await _mediator.Publish(@event);
+			//await _mediator.Publish(@event);
 		}
 
 		public async Task<ValidationResult> SendCommand<T>(T command) where T : Command
