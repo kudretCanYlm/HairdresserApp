@@ -5,7 +5,7 @@ using User.Application.EventSourcedNormalizers.Address;
 
 namespace User.Application.Interfaces.Address
 {
-	public interface IAddressAppService
+	public interface IAddressAppService:IDisposable
 	{
 		Task<IEnumerable<AddressDto>> GetAll();
 		Task<IEnumerable<AddressDto>> GetAllByUserId(Guid userId);
