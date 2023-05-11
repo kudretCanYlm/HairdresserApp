@@ -17,7 +17,7 @@ internal class Program
 	private static void Main(string[] args)
 	{
 		var builder = WebApplication.CreateBuilder(args);
-		builder.Host.UseSerilog(LoggingExtensions.Configure);
+		//builder.Host.UseSerilog(LoggingExtensions.Configure);
 		//Log.Logger = LoggingExtensions.AddMyLogging(builder.Configuration);
 
 
