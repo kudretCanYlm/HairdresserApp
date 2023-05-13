@@ -14,6 +14,13 @@
 		<Protobuf Include="Auth\Protos\Auth.proto" GrpcServices="Client">
 			<Link>Auth\Protos\Auth.proto</Link>
 		</Protobuf>
+		
+		<Protobuf Include="Media\Protos\Media.proto" GrpcServices="Client">
+			<Link>Media\Protos\Media.proto</Link>
+		</Protobuf>
+		
 	</ItemGroup>
+	
+	
 
 </Project>

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option csharp_namespace = "Grpc.Media.Protos";
+
+service MediaProtoService{
+	rpc GetAllMediasByOwnerId(GetAllMediasByOwnerIdRequest) returns (MediaModelList);
+	rpc GetMediaByOwnerIdAndType(GetMediaByOwnerIdAndTypeRequest) returns (MediaModel);
+}
+
+message GetAllMediasByOwnerIdRequest{
+	string ImageOwnerId=1;
+}
+
+message GetMediaByOwnerIdAndTypeRequest {
+	string ImageOwnerId=1;
+	string Type=2;
+}
+
+message MediaModelList {
+	repeated MediaModel Medias=1;
+}
+
+message MediaModel {
+	string Id=1;
+	string Base64Media=2;
+	string ImageOwnerId=3;
+}
