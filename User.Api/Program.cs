@@ -11,6 +11,7 @@ using User.Infrastructure.Extensions;
 using Serilog;
 using MEES.Infrastructure.Logging;
 using Microsoft.Extensions.Logging.Console;
+using Grpc.Media;
 
 internal class Program
 {
@@ -23,6 +24,7 @@ internal class Program
 
 		// Add services to the container.
 		builder.Services.AddAuthGrpc(builder.Configuration["AuthUrl"]);
+		builder.Services.AddMediaGrpc(builder.Configuration["MediaUrl"]);
 		builder.Services.UseDomain(typeof(Program));
 
 		builder.Services.UseUserInfrastructure(x => x.UseSqlServer(builder.Configuration.GetConnectionString("UserServiceDb")));
