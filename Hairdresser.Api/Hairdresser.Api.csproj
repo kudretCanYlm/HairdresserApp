@@ -8,7 +8,19 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Grpc\Grpc.csproj" />
+    <ProjectReference Include="..\Hairdresser.Application\Hairdresser.Application.csproj" />
+    <ProjectReference Include="..\Hairdresser.Domain\Hairdresser.Domain.csproj" />
+    <ProjectReference Include="..\Hairdresser.Infrastructure\Hairdresser.Infrastructure.csproj" />
+    <ProjectReference Include="..\Swagger\Swagger.csproj" />
   </ItemGroup>
 
 </Project>
