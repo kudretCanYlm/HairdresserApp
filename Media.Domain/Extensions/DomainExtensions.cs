@@ -23,8 +23,8 @@ namespace Media.Domain.Extensions
 			services.AddScoped<IMediatorHandler, InMemoryBus>();
 			services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(startup.GetTypeInfo().Assembly));
 
-			//services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-			//services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+			services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+			services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 			// Domain - Events
 			services.AddScoped<INotificationHandler<MediaCreatedEvent>, MediaEventHandler>();
