@@ -51,7 +51,7 @@ internal class Program
 			app.UseMySwagger(app.Configuration);
 		}
 
-		//app.UseAuthMiddleware();
+		app.UseAuthMiddleware();
 
 		app.UseHttpsRedirection();
 
