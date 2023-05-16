@@ -14,6 +14,9 @@ namespace Database.PaggingAndFilter
 
 			IOrderedQueryable<T> orderedQuery = null;
 
+			if (orderByList == null || orderByList.Count() == 0)
+				orderedQuery = query.OrderBy(x => x.Id);
+
 			foreach (var orderBy in orderByList)
 			{
 				if (orderedQuery == null)
@@ -27,8 +30,8 @@ namespace Database.PaggingAndFilter
 
 		public static IQueryable<T> MyWhere<T>(this IQueryable<T> query, List<(FilteringOption, Expression<Func<T, bool>>)> filterList = null) where T : BaseEntity
 		{
-			if (filterList == null)
-				return query;
+			if (filterList == null || filterList.Count() == 0)
+				query = query.Where(x => true);
 
 			foreach (var item in filterList)
 			{
