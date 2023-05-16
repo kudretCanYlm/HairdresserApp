@@ -117,7 +117,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Middlewares", "Middlewares\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grpc", "Grpc\Grpc.csproj", "{CA12959A-4701-4B64-8A8E-9E3C9EBE6A0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Media.GRPC", "Media.GRPC\Media.GRPC.csproj", "{7FC0E2A7-EE34-459A-9E64-E855F3ED70C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Media.GRPC", "Media.GRPC\Media.GRPC.csproj", "{7FC0E2A7-EE34-459A-9E64-E855F3ED70C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
