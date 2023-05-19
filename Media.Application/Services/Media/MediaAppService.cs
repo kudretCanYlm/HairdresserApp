@@ -45,7 +45,7 @@ namespace Media.Application.Services.Media
 		}
 		public async Task<IList<MediaHistoryData>> GetAllHistoryAsync(Guid id)
 		{
-			return MediaHistory.ToJavaScriptAddressHistory(await _eventStoreRepository.All(id));
+			return MediaHistory.ToJavaScriptMediaHistory(await _eventStoreRepository.All(id));
 		}
 
 		public async Task<ValidationResult> RemoveAsync(Guid id)

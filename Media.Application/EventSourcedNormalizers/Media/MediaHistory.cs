@@ -1,11 +1,6 @@
 ﻿using Events;
 using Events.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Media.Application.EventSourcedNormalizers.Media
 {
@@ -14,7 +9,7 @@ namespace Media.Application.EventSourcedNormalizers.Media
 		public static IList<MediaHistoryData> HistoryData { get; set; }
 
 
-		public static IList<MediaHistoryData> ToJavaScriptAddressHistory(IList<StoredEvent> storedEvents)
+		public static IList<MediaHistoryData> ToJavaScriptMediaHistory(IList<StoredEvent> storedEvents)
 		{
 			HistoryData = new List<MediaHistoryData>();
 			MediaHistoryDeserializer(storedEvents);
