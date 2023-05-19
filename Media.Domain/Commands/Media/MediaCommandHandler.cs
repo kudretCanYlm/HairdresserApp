@@ -54,14 +54,14 @@ namespace Media.Domain.Commands.Media
 		{
 			var media = await mediaRepository.GetById(request.Id);
 
-			media = mapper.Map(request, media);
-
 			if (media == null)
 			{
 				AddError("media not found");
 				return ValidationResult;
 			}
-			
+
+			media = mapper.Map(request, media);
+
 			media.AddDomainEvent(mapper.Map<MediaUpdatedEvent>(media));
 
 			mediaRepository.Update(media);
