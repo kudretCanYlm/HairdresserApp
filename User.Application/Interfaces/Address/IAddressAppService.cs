@@ -7,6 +7,7 @@ namespace User.Application.Interfaces.Address
 {
 	public interface IAddressAppService:IDisposable
 	{
+		Task<bool> CheckUserAddressByUserId(Guid userId);
 		Task<IEnumerable<AddressDto>> GetAll();
 		Task<IEnumerable<AddressDto>> GetAllByUserId(Guid userId);
 		Task<UserDto> GetById(Guid id);

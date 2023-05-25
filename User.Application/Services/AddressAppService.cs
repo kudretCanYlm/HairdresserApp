@@ -27,6 +27,13 @@ namespace User.Application.Services
 			_mediator = mediator;
 		}
 
+		public async Task<bool> CheckUserAddressByUserId(Guid userId)
+		{
+			var query = new CheckAdressByUserIdQuery(userId);
+
+			return await _mediator.Send(query);
+		}
+
 		public async Task<ValidationResult> Create(CreateAddressDto createUserAddressDto)
 		{
 			var query=_mapper.Map<CreateUserAddressCommand>(createUserAddressDto);
@@ -75,5 +82,6 @@ namespace User.Application.Services
 		{
 			GC.SuppressFinalize(this);
 		}
+
 	}
 }

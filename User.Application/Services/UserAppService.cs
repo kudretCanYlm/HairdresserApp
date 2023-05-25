@@ -26,6 +26,14 @@ namespace User.Application.Services
 			_mediator = mediator;
 		}
 
+		public async Task<Guid?> Login(LoginDto loginDto)
+		{
+			var loginQuery = _mapper.Map<UserLoginQuery>(loginDto);
+			var userId = await _mediator.Send(loginQuery);
+			
+			return userId;
+		}
+
 		public async Task<ValidationResult> CreateAsync(CreateUserDto createUserDto)
 		{
 			var createUserCommand = _mapper.Map<CreateUserCommand>(createUserDto);
@@ -65,5 +73,7 @@ namespace User.Application.Services
 		{
 			GC.SuppressFinalize(this);
 		}
+
+
 	}
 }

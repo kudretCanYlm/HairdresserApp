@@ -1,13 +1,10 @@
-﻿using Events.User;
-using Grpc.Auth;
+﻿using Grpc.Auth;
 using Grpc.Auth.ClientServices;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NetDevPack.Mediator;
-using Newtonsoft.Json;
-using System.Security.Claims;
+using User.Application.Dto.Address;
 using User.Application.Dto.User;
+using User.Application.Interfaces.Address;
 using User.Application.Interfaces.User;
 
 namespace User.Api.Controllers
@@ -17,65 +14,74 @@ namespace User.Api.Controllers
 	public class UserController : ControllerBase
 	{
 		private readonly IUserAppService _userAppService;
-		private readonly IMediatorHandler _mediator;
-		private readonly AuthGrpcService authGrpcService;
-		private readonly ILogger<UserController> _logger;
+		private readonly IAddressAppService _addressAppService;
+		private readonly AuthGrpcService _authGrpcService;
 
-		public UserController(IUserAppService userAppService, IMediatorHandler mediator, AuthGrpcService authGrpcService, ILogger<UserController> logger)
+		public UserController(IUserAppService userAppService, IAddressAppService addressAppService, AuthGrpcService authGrpcService)
 		{
 			_userAppService = userAppService;
-			_mediator = mediator;
-			this.authGrpcService = authGrpcService;
-			_logger = logger;
+			_addressAppService = addressAppService;
+			_authGrpcService = authGrpcService;
 		}
 
-		[HttpPost, AllowAnonymous]
-		public async Task<IActionResult> Index([FromBody] CreateUserDto createUserDto)
+		[HttpPost, Route("Register"), AllowAnonymous]
+		public async Task<IActionResult> Register([FromBody] CreateUserDto createUserDto)
 		{
-
 			var result = await _userAppService.CreateAsync(createUserDto);
+			
+			if (result.IsValid)
+				return Ok(result);
 
+			return BadRequest(result);
 
-			var history = await _userAppService.GetAllHistoryAsync(Guid.Parse("47c02319-a2c4-40c8-9e75-08db516ff33e"));
-
-			return Created("Test", history);
-		}
-		[HttpGet, Route("tokentest/{token}"), AllowAnonymous]
-		public async Task<IActionResult> Gettomen(string token)
-		{
-			var user = await authGrpcService.CheckTokenRefreshAndUserId(token);
-
-			return Ok(user);
 		}
 
-		[HttpDelete, Route("delete"), AllowAnonymous]
-		public async Task<IActionResult> Del(Guid id)
+		[HttpPost,Route("Login"),AllowAnonymous]
+		public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
 		{
-			var result=await _userAppService.RemoveAsync(id);
+			var userId = await _userAppService.Login(loginDto);
+
+			if (userId == null)
+				return BadRequest("User not found");
+
+			var token = await _authGrpcService.CreateNewUserToken((Guid)userId);
+			
+			return Ok(token);
+		}
+		//test et
+		[HttpGet,Route("CheckUserAddress")]
+		public async Task<IActionResult> CheckUserAddress()
+		{
+			var userId = GrpcAuthExtension.GetCurrentUserId(HttpContext);
+
+			var result = await _addressAppService.CheckUserAddressByUserId((Guid)userId);
+
+			return Ok(result);
+		}
+		//test et
+		[HttpPost,Route("AddUserAddress")]
+		public async Task<IActionResult> AddUserAddress([FromBody] CreateAddressDto createAddressDto)
+		{
+			createAddressDto.UserId= (Guid)GrpcAuthExtension.GetCurrentUserId(HttpContext);
+
+			var result = await _addressAppService.Create(createAddressDto);
+
+			if (result.IsValid)
+				return Ok(result);
+
+			return BadRequest(result);
+		}
+		//test et
+		[HttpGet,Route("GetAllUserAddresses")]
+		public async Task<IActionResult> GetAllUserAddresses()
+		{
+			var userId = GrpcAuthExtension.GetCurrentUserId(HttpContext);
+
+			var result = await _addressAppService.GetAllByUserId((Guid)userId);
 
 			return Ok(result);
 		}
 
-		[HttpGet, Route("melih")]
-		public async Task<IActionResult> GetMelih()
-		{
-			var user = HttpContext.GetCurrentUserId();
-			return Ok(user);
-		}
-
-		[HttpGet, Route("melih2")]
-		public async Task<IActionResult> GetMelih2()
-		{
-			_logger.LogError("hahta");
-			return Ok("asd");
-		}
-
-		[HttpGet, Route("test13"), AllowAnonymous]
-		public async Task<IActionResult> GEtTest()
-		{
-			var user = await _userAppService.GetAllAsync();
-
-			return Ok(user);
-		}
+		//buraya adres seçme ekle kullanıcının kayıtlı adreserinden birini seçebilir
 	}
 }
