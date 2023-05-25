@@ -1,10 +1,12 @@
 ﻿using Events.Bus;
+using Events.MassTransitOptions;
 using Events.User;
 using Events.User.Address;
 using Filters.Behaviours;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetDevPack.Mediator;
 using System.Reflection;
@@ -15,13 +17,13 @@ using User.Domain.Mapper;
 using User.Domain.Models;
 using User.Domain.Queries.Address;
 using User.Domain.Queries.User;
-using User.Domain.Validations.User;
+using User.Domain.Sagas.CreateUserMedia;
 
 namespace User.Domain.Extensions
 {
 	public static class DomainExtensions
 	{
-		public static void UseDomain(this IServiceCollection services, Type startup)
+		public static void UseDomain(this IServiceCollection services, Type startup,IConfiguration configuration)
 		{
 			services.AddAutoMapper(typeof(DomainToCommandProfile), typeof(EventToCommandProfile));
 			services.AddScoped<IMediatorHandler, InMemoryBus>();
@@ -51,7 +53,11 @@ namespace User.Domain.Extensions
 			services.AddScoped<IRequestHandler<GetAllUserAddressesQuery, IEnumerable<AddressModel>>,AddressQueryHandler>();
 			services.AddScoped<IRequestHandler<GetUserAddressByIdQuery, AddressModel>,AddressQueryHandler>();
 			services.AddScoped<IRequestHandler<GetUserAddressesByUserId, IEnumerable<AddressModel>>, AddressQueryHandler>();
+			services.AddScoped<IRequestHandler<CheckAdressByUserIdQuery, bool>, AddressQueryHandler>();
+			services.AddScoped<IRequestHandler<UserLoginQuery, Guid?>, UserQueryHandler>();
 
+			//saga
+			services.AddMyMassTransitStateMachine<CreateUserMediaStateMachine, CreateUserMediaState>(configuration, RabbitMqQueues.StateMachine_UserMedia);
 
 		}
 	}
