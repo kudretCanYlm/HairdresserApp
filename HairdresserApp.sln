@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logging", "Logging\Logging.csproj", "{63B56CC8-3C7A-48D0-B340-40902231D37F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging", "MessageBroker\Messaging.csproj", "{5D2304A7-A4DE-4D01-9869-02773F2B52F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "MessageBroker\Common.csproj", "{5D2304A7-A4DE-4D01-9869-02773F2B52F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events", "Events\Events.csproj", "{C4378B31-E9F2-44AF-8E50-9245A91F76DA}"
 EndProject
@@ -121,15 +121,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Media.GRPC", "Media.GRPC\Me
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HairdresserService", "HairdresserService", "{461556F2-9B54-4C91-B969-34ADF9EEE4FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HairdresserService.Api", "HairdresserService.Api\HairdresserService.Api.csproj", "{32B93A0B-00E6-4FEF-8450-83F4A9756C42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HairdresserService.Api", "HairdresserService.Api\HairdresserService.Api.csproj", "{32B93A0B-00E6-4FEF-8450-83F4A9756C42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HairdresserService.Application", "HairdresserService.Application\HairdresserService.Application.csproj", "{5353CE76-49AA-4F02-8983-6AD410C73AE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HairdresserService.Application", "HairdresserService.Application\HairdresserService.Application.csproj", "{5353CE76-49AA-4F02-8983-6AD410C73AE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HairdresserService.Core", "HairdresserService.Core\HairdresserService.Core.csproj", "{DA8CCBBD-7F6F-4F96-A3BA-6BE99AC4B985}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HairdresserService.Core", "HairdresserService.Core\HairdresserService.Core.csproj", "{DA8CCBBD-7F6F-4F96-A3BA-6BE99AC4B985}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HairdresserService.Domain", "HairdresserService.Domain\HairdresserService.Domain.csproj", "{E78ABA49-FE80-4EAF-9ACA-39E598C0E5B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HairdresserService.Domain", "HairdresserService.Domain\HairdresserService.Domain.csproj", "{E78ABA49-FE80-4EAF-9ACA-39E598C0E5B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HairdresserService.Infrastructure", "HairdresserService.Infrastructure\HairdresserService.Infrastructure.csproj", "{179066D8-57D2-4AF0-9E57-CC49AB5978E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HairdresserService.Infrastructure", "HairdresserService.Infrastructure\HairdresserService.Infrastructure.csproj", "{179066D8-57D2-4AF0-9E57-CC49AB5978E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

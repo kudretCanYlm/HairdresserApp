@@ -9,8 +9,14 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Automatonymous" Version="5.1.3" />
+    <PackageReference Include="Cogito.MassTransit.EntityFrameworkCore" Version="1.0.25" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
     <PackageReference Include="MediatR" Version="12.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="NetDevPack" Version="6.1.0" />
     <PackageReference Include="Serilog" Version="2.12.0" />
@@ -20,6 +26,7 @@
     <ProjectReference Include="..\Database\Database.csproj" />
     <ProjectReference Include="..\Events\Events.csproj" />
     <ProjectReference Include="..\Filters\Filters.csproj" />
+    <ProjectReference Include="..\MessageBroker\Common.csproj" />
   </ItemGroup>
 
 </Project>
