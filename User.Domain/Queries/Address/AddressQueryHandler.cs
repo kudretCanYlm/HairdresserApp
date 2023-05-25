@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using User.Domain.Interfaces;
 using User.Domain.Models;
 
@@ -6,7 +7,8 @@ namespace User.Domain.Queries.Address
 {
 	public class AddressQueryHandler : IRequestHandler<GetAllUserAddressesQuery, IEnumerable<AddressModel>>,
 										IRequestHandler<GetUserAddressByIdQuery, AddressModel>,
-										IRequestHandler<GetUserAddressesByUserId,IEnumerable<AddressModel>>
+										IRequestHandler<GetUserAddressesByUserId,IEnumerable<AddressModel>>,
+										IRequestHandler<CheckAdressByUserIdQuery,bool>
 	{
 		private readonly IAddressRepository _addressRepository;
 
@@ -31,6 +33,13 @@ namespace User.Domain.Queries.Address
 		{
 			var userAddress = await _addressRepository.GetAllByUserId(request.UserId);
 			return userAddress;
+		}
+
+		public async Task<bool> Handle(CheckAdressByUserIdQuery request, CancellationToken cancellationToken)
+		{
+			var status = await _addressRepository.GetManyQuery(x => x.UserId == request.UserId).AnyAsync();
+			
+			return status;
 		}
 	}
 }
