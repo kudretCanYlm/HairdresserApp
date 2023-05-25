@@ -6,6 +6,7 @@ namespace User.Application.Interfaces.User
 {
 	public interface IUserAppService:IDisposable
 	{
+		Task<Guid?> Login(LoginDto loginDto);
 		Task<IEnumerable<UserDto>> GetAllAsync();
 		Task<UserDto> GetByIdAsync(Guid id);
 		Task<ValidationResult> CreateAsync(CreateUserDto createUserDto);
