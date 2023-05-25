@@ -4,13 +4,24 @@ option csharp_namespace = "Grpc.Auth.Protos";
 
 service AuthProtoService{
 	rpc GetUser (GetUserRequest) returns (UserModel);
+	rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
 }
 
 
+////////////////////////
 message GetUserRequest{
 	string userToken=1;
 }
 
 message UserModel{
 	string userId=1;
+}
+/////////////////////
+
+message CreateUserRequest{
+	string userId=1;
+}
+
+message CreateUserResponse{
+	string token=1;
 }
