@@ -24,5 +24,15 @@ namespace Auth.GRPC.Services
 			return userModel;
 
 		}
+
+		public override async Task<CreateUserResponse> CreateUser(CreateUserRequest request, ServerCallContext context)
+		{
+			var result = await _authAppService.CreateToken(Guid.Parse(request.UserId));
+
+			return new CreateUserResponse
+			{
+				Token = result.Token
+			};
+		}
 	}
 }
