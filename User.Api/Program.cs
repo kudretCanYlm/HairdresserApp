@@ -12,6 +12,9 @@ using Serilog;
 using MEES.Infrastructure.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Grpc.Media;
+using Events.MassTransitOptions;
+using User.Domain.Sagas.CreateUserMedia;
+using Elastic.Apm.Api;
 
 internal class Program
 {
@@ -21,11 +24,12 @@ internal class Program
 		//builder.Host.UseSerilog(LoggingExtensions.Configure);
 		//Log.Logger = LoggingExtensions.AddMyLogging(builder.Configuration);
 
+		
 
 		// Add services to the container.
 		builder.Services.AddAuthGrpc(builder.Configuration["AuthUrl"]);
 		builder.Services.AddMediaGrpc(builder.Configuration["MediaUrl"]);
-		builder.Services.UseDomain(typeof(Program));
+		builder.Services.UseDomain(typeof(Program), builder.Configuration);
 
 		builder.Services.UseUserInfrastructure(x => x.UseSqlServer(builder.Configuration.GetConnectionString("UserServiceDb")));
 		builder.Services.UseUserApplication();
@@ -36,6 +40,7 @@ internal class Program
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddMySwagger(builder.Configuration);
 		
+		//test
 		var app = builder.Build();
 
 		//var loggerFactory = LoggerFactory.Create(builder =>
