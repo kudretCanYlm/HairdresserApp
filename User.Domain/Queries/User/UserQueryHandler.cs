@@ -5,7 +5,8 @@ using User.Domain.Models;
 namespace User.Domain.Queries.User
 {
     public class UserQueryHandler : IRequestHandler<GetAllUsersQuery, IEnumerable<UserModel>>,
-                                    IRequestHandler<GetUserByIdQuery,UserModel>
+                                    IRequestHandler<GetUserByIdQuery,UserModel>,
+                                    IRequestHandler<UserLoginQuery,Guid?>
     {
         private readonly IUserRepository userRepository;
 
@@ -28,5 +29,16 @@ namespace User.Domain.Queries.User
 				throw new ArgumentNullException(nameof(user));
 			return user;
 		}
+
+		public async Task<Guid?> Handle(UserLoginQuery request, CancellationToken cancellationToken)
+		{
+
+            var user = await userRepository.Get(x => x.Password == UserModel.ToHash(request.Password) && x.Email == request.Email);
+
+            if (user == null)
+                return null;
+
+			return user.Id;
+        }
 	}
 }
