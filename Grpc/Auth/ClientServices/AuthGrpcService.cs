@@ -17,7 +17,18 @@ namespace Grpc.Auth.ClientServices
 			var user = await _authProtoService.GetUserAsync(authRequest);
 
 			return user;
+		}
 
+		public async Task<CreateUserResponse?> CreateNewUserToken(Guid userId)
+		{
+			var request = new CreateUserRequest
+			{
+				UserId = userId.ToString(),
+			};
+
+			var response = await _authProtoService.CreateUserAsync(request);
+
+			return response;
 		}
 	}
 }
