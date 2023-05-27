@@ -9,6 +9,7 @@ namespace Hairdresser.Application.Mapper
 		public ModelToDto()
 		{
 			CreateMap<HairdresserModel, HairdresserDto>();
+			CreateMap<HairdresserModel, HairdresserImageDto>();
 		}
 	}
 }
