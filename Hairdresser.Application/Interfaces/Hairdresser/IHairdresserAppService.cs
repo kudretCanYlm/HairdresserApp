@@ -1,4 +1,5 @@
-﻿using FluentValidation.Results;
+﻿using Database.PaggingAndFilter;
+using FluentValidation.Results;
 using Hairdresser.Application.Dto;
 using Hairdresser.Application.EventSourcedNormalizers.Hairdresser;
 
@@ -6,6 +7,8 @@ namespace Hairdresser.Application.Interfaces.Hairdresser
 {
 	public interface IHairdresserAppService: IDisposable
 	{
+		Task<bool> CheckHairdresserByIdAndUserId(Guid id,Guid userId);
+		Task<IEnumerable<HairdresserImageDto>> GetAllHairdresserByFilter(PageSearchArgs pageSearchArgs);
 		Task<IEnumerable<HairdresserDto>> GetAllHairdressers();
 		Task<HairdresserDto> GetHairdresserById(Guid id);
 		//Task<IEnumerable<HairdresserWithImageDto>> GetHairdresserByPagedList(PageSearchArgs args);
