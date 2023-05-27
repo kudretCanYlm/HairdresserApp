@@ -1,15 +1,16 @@
 ﻿using Database.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Database.PaggingAndFilter
 {
 	public class PagedList<T> : IPagedList<T> where T : BaseEntity
 	{
+		public PagedList()
+		{
+
+		}
+
 		public PagedList(int pageIndex, int pageSize, int totalCount, int totalPages, IEnumerable<T> items)
 		{
 			PageIndex = pageIndex;
@@ -19,7 +20,7 @@ namespace Database.PaggingAndFilter
 			Items = items;
 		}
 
-		public PagedList(IQueryable<T> query, PagingArgs pagingArgs, List<(SortingOption, Expression<Func<T, object>>)> orderByList = null, List<(FilteringOption, Expression<Func<T, bool>>)> filterList = null) 
+		public async Task CreatePagedList(IQueryable<T> query, PagingArgs pagingArgs, List<(SortingOption, Expression<Func<T, object>>)> orderByList = null, List<(FilteringOption, Expression<Func<T, bool>>)> filterList = null) 
 		{
 			query = query.MyOrderBy(orderByList);
 			query = query.MyWhere(filterList);
@@ -32,13 +33,13 @@ namespace Database.PaggingAndFilter
 			var items =
 				pagingArgs.PagingStrategy == PagingStrategy.NoCount
 				?
-				query.Skip((PageIndex - 1) * PageSize).Take(PageSize + 1).ToList()
+				await query.Skip((PageIndex - 1) * PageSize).Take(PageSize + 1).ToListAsync()
 				:
 				(
-					(TotalCount = query.Count()) > 0
+					(TotalCount = await query.CountAsync()) > 0
 						?
-						query.Skip((PageIndex - 1) * PageSize)
-							.Take(PageSize).ToList()
+					await	query.Skip((PageIndex - 1) * PageSize)
+							.Take(PageSize).ToListAsync()
 							: new List<T>()
 				);
 
@@ -56,19 +57,19 @@ namespace Database.PaggingAndFilter
 
 			Items = items;
 		}
-		public int PageIndex { get; }
+		public int PageIndex { get; private set; }
 
-		public int PageSize { get; }
+		public int PageSize { get; private set; }
 
-		public int TotalCount { get; }
+		public int TotalCount { get; private set; }
 
-		public int TotalPages { get; }
+		public int TotalPages { get; private set; }
 
 		public bool HasPreviousPage => PageIndex > 0;
 
 		public bool HasNextPage => PageIndex + 1 < TotalCount;
 
-		public IEnumerable<T> Items { get; }
+		public IEnumerable<T> Items { get; private set; }
 
 
 	}
