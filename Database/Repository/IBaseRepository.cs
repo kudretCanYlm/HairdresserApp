@@ -7,6 +7,7 @@ namespace Database.Repository
 {
 	public interface IBaseRepository<T>:IRepository<T> where T:BaseEntity,IAggregateRoot
 	{
+		IQueryable<T> Table { get;}
 		void Add(T entity);
 		void Update(T entity);
 		void UpdateMany(IEnumerable<T> entities);
