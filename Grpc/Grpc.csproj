@@ -18,6 +18,14 @@
 		<Protobuf Include="Media\Protos\Media.proto" GrpcServices="Client">
 			<Link>Media\Protos\Media.proto</Link>
 		</Protobuf>
+
+		<Protobuf Include="User\Protos\User.proto" GrpcServices="Client">
+			<Link>User\Protos\User.proto</Link>
+		</Protobuf>
+		
+		<Protobuf Include="Hairdresser\Protos\Hairdresser.proto" GrpcServices="Client">
+			<Link>Hairdresser\Protos\Hairdresser.proto</Link>
+		</Protobuf>
 		
 	</ItemGroup>
 	
