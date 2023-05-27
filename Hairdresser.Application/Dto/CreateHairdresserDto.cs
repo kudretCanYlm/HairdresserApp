@@ -10,5 +10,6 @@
 		public TimeSpan? CloseHour { get; set; }
 		public string? WorkDays { get; set; }
 		public Guid OwnerId { get; set; }
+		public string Base64Media { get; set; }
 	}
 }
