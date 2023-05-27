@@ -25,5 +25,7 @@ namespace Hairdresser.Domain.Commands.Hairdresser
 			WorkDays = workDays;
 			OwnerId = ownerId;
 		}
+
+		public string Base64Media { get; set; }
 	}
 }
