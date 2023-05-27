@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "Grpc.Hairdresser.Protos";
+
+service HairdresserProtoService{
+	rpc CheckHairdresserIdAndUserId(CheckHairdresserIdAndUserIdRequest) returns (CheckHairdresserModel); 
+}
+
+message CheckHairdresserIdAndUserIdRequest{
+	string UserId=1;
+	string HairdresserId=2;
+}
+
+message CheckHairdresserModel{
+	bool IsThere=1;
+}

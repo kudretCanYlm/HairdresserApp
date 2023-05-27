@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Grpc.User.Protos";
+
+service UserProtoService{
+	rpc GetSelectedUserAddressById(GetSelectedUserAddressByIdRequest) returns (UserAddress);
+
+}
+
+message GetSelectedUserAddressByIdRequest{
+	string UserId=1;
+}
+
+message UserAddress{
+	string Id=1;
+	string Street=2; 
+	string City=3; 
+	string State=4; 
+	string Country=5; 
+	string ZipCode=6; 
+}
