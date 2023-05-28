@@ -5,8 +5,9 @@ using MediatR;
 namespace Media.Domain.Queries.Media
 {
 	public class MediaQueryHandler : IRequestHandler<GetAllMediasQuery, IEnumerable<MediaModel>>,
-									IRequestHandler<GetMediaByImageOwnerIdAndTypeQuery,MediaModel>
-	{
+									IRequestHandler<GetMediaByImageOwnerIdAndTypeQuery,MediaModel>,
+									IRequestHandler<GetMediaListByImageOwnerIdAndTypeQuery,IEnumerable<MediaModel>>
+		{					
 		private readonly IMediaRepository mediaRepository;
 
 		public MediaQueryHandler(IMediaRepository mediaRepository)
@@ -26,6 +27,13 @@ namespace Media.Domain.Queries.Media
 			var media = await mediaRepository.GetMediaByImageOwnerIdAndCustomType(request.ImageOwnerId, request.CustomType);
 			
 			return media;
+		}
+
+		public async Task<IEnumerable<MediaModel>> Handle(GetMediaListByImageOwnerIdAndTypeQuery request, CancellationToken cancellationToken)
+		{
+			var mediaList=await mediaRepository.GetMany(x=>x.ImageOwnerId==request.ImageOwnerId && x.CustomType==request.CustomType);
+
+			return mediaList;
 		}
 	}
 }
