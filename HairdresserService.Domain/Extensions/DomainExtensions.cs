@@ -45,7 +45,7 @@ namespace HairdresserService.Domain.Extensions
 
 			// Domain - Queries
 			services.AddScoped<IRequestHandler<GetAllHairdresserServicesByHairdresserIdQuery, IEnumerable<HairdresserServiceModel>>, HairdresserServiceQueryHandler>();
-
+			services.AddScoped<IRequestHandler<GetHairdresserServiceByIdQuery, HairdresserServiceModel>, HairdresserServiceQueryHandler>();
 
 
 		}
