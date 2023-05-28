@@ -58,7 +58,7 @@ namespace User.Api.Controllers
 
 			return Ok(result);
 		}
-		//test et
+		
 		[HttpPost,Route("AddUserAddress")]
 		public async Task<IActionResult> AddUserAddress([FromBody] CreateAddressDto createAddressDto)
 		{
@@ -71,7 +71,7 @@ namespace User.Api.Controllers
 
 			return BadRequest(result);
 		}
-		//test et
+		
 		[HttpGet,Route("GetAllUserAddresses")]
 		public async Task<IActionResult> GetAllUserAddresses()
 		{
