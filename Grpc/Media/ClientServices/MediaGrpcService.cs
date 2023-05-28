@@ -12,11 +12,12 @@ namespace Grpc.Media.ClientServices
 			_mediaProtoService = mediaProtoService;
 		}
 
-		public async Task<IEnumerable<MediaModel>> GetAllMediasByOwnerIdAsync(Guid ownerId)
+		public async Task<IEnumerable<MediaModel>> GetAllMediasByOwnerIdAndTypeAsync(Guid ownerId, string type)
 		{
-			var request = new GetAllMediasByOwnerIdRequest
+			var request = new GetAllMediasByOwnerIdAndTypeRequest
 			{
 				ImageOwnerId= ownerId.ToString(),
+				Type= type
 			};
 
 			var mediaList = await _mediaProtoService.GetAllMediasByOwnerIdAsync(request);

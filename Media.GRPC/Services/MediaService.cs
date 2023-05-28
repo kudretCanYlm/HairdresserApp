@@ -17,11 +17,24 @@ namespace Media.GRPC.Services
 			_mapper = mapper;
 		}
 
-		public override async Task<MediaModelList> GetAllMediasByOwnerId(GetAllMediasByOwnerIdRequest request, ServerCallContext context)
+		public override async Task<MediaModelList> GetAllMediasByOwnerId(GetAllMediasByOwnerIdAndTypeRequest request, ServerCallContext context)
 		{
-			var medias = await _mediaAppService.GetAllByOwnerIdAsync(Guid.Parse(request.ImageOwnerId));
+			var medias = await _mediaAppService.GetMediaListByImageOwnerIdAndType(Guid.Parse(request.ImageOwnerId),request.Type);
 
 			var mediaModelList = new MediaModelList();
+
+
+			if (!medias.Any())
+			{
+				mediaModelList.Medias.Add(new MediaModel
+				{
+					Id=Guid.Empty.ToString(),
+					Base64Media="",
+					ImageOwnerId=Guid.Empty.ToString(),
+				});
+
+				return mediaModelList;
+			}
 
 			mediaModelList.Medias.AddRange(_mapper.Map<IEnumerable<MediaModel>>(medias));
 
@@ -32,6 +45,14 @@ namespace Media.GRPC.Services
 		public override async Task<MediaModel> GetMediaByOwnerIdAndType(GetMediaByOwnerIdAndTypeRequest request, ServerCallContext context)
 		{
 			var media = await _mediaAppService.GetByOwnerIdAndImageType(Guid.Parse(request.ImageOwnerId), request.Type);
+
+			if (media == null)
+				return new MediaModel
+				{
+					Base64Media="",
+					Id=Guid.Empty.ToString(),
+					ImageOwnerId= Guid.Empty.ToString()
+				};
 
 			return _mapper.Map<MediaModel>(media);
 		}
