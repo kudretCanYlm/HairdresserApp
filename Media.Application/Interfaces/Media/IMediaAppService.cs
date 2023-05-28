@@ -6,6 +6,7 @@ namespace Media.Application.Interfaces.Media
 {
 	public interface IMediaAppService:IDisposable
 	{
+		Task<IEnumerable<MediaDto>> GetMediaListByImageOwnerIdAndType(Guid ownerId, string type);
 		Task<IEnumerable<MediaDto>> GetAllByOwnerIdAsync(Guid ownerId);
 		Task<MediaDto> GetByOwnerIdAndImageType(Guid ownerId, string type);
 		Task<ValidationResult> CreateAsync(CreateMediaDto createMediaDto);
