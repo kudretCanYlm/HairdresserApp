@@ -15,5 +15,7 @@
 			ServiceDuration= serviceDuration;
 			HairdresserId= hairdresserId;
 		}
+
+		public IEnumerable<string> Base64MediaList { get; set; }
 	}
 }
