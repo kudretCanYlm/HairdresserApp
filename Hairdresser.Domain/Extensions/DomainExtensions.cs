@@ -1,4 +1,5 @@
-﻿using Events.Bus;
+﻿using Database.PaggingAndFilter;
+using Events.Bus;
 using Events.Hairdresser;
 using Filters.Behaviours;
 using FluentValidation;
@@ -17,7 +18,7 @@ namespace Hairdresser.Domain.Extensions
 {
 	public static class DomainExtensions
 	{
-		public static void UseDomain(this IServiceCollection services,Type startup)
+		public static void UseDomain(this IServiceCollection services, Type startup)
 		{
 			services.AddAutoMapper(typeof(DomainToCommandProfile), typeof(EventToCommandProfile));
 			services.AddScoped<IMediatorHandler, InMemoryBus>();
@@ -39,6 +40,10 @@ namespace Hairdresser.Domain.Extensions
 			// Domain - Queries
 			services.AddScoped<IRequestHandler<GetAllHairdressersQuery, IEnumerable<HairdresserModel>>, HairdresserQueryHandler>();
 			services.AddScoped<IRequestHandler<GetHairdresserByIdQuery, HairdresserModel>, HairdresserQueryHandler>();
+			services.AddScoped<IRequestHandler<GetAllHairdresserByFilterQuery, IPagedList<HairdresserModel>>, HairdresserQueryHandler>();
+			services.AddScoped<IRequestHandler<CheckHairdresserIdAndUserIdQuery, bool>, HairdresserQueryHandler>();
+
+
 		}
 	}
 }
