@@ -39,6 +39,7 @@ namespace Media.Domain.Extensions
 			// Domain - Queries
 			services.AddScoped<IRequestHandler<GetAllMediasQuery, IEnumerable<MediaModel>>, MediaQueryHandler>();
 			services.AddScoped<IRequestHandler<GetMediaByImageOwnerIdAndTypeQuery, MediaModel>, MediaQueryHandler>();
+			services.AddScoped<IRequestHandler<GetMediaListByImageOwnerIdAndTypeQuery, IEnumerable<MediaModel>>, MediaQueryHandler>();
 
 
 		}
