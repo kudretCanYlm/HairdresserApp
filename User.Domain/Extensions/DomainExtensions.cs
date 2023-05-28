@@ -23,7 +23,7 @@ namespace User.Domain.Extensions
 {
 	public static class DomainExtensions
 	{
-		public static void UseDomain(this IServiceCollection services, Type startup,IConfiguration configuration)
+		public static void UseDomain(this IServiceCollection services, Type startup)
 		{
 			services.AddAutoMapper(typeof(DomainToCommandProfile), typeof(EventToCommandProfile));
 			services.AddScoped<IMediatorHandler, InMemoryBus>();
@@ -43,22 +43,18 @@ namespace User.Domain.Extensions
 			services.AddScoped<IRequestHandler<CreateUserCommand, ValidationResult>, UserCommandHandler>();
 			services.AddScoped<IRequestHandler<DeleteUserCommand, ValidationResult>, UserCommandHandler>();
 			services.AddScoped<IRequestHandler<UpdateUserCommand, ValidationResult>, UserCommandHandler>();
-			services.AddScoped<IRequestHandler<CreateUserAddressCommand,ValidationResult>,AddressCommandHandler>();
-			services.AddScoped<IRequestHandler<DeleteUserAddressCommand,ValidationResult>,AddressCommandHandler>();
-			services.AddScoped<IRequestHandler<UpdateUserAddressCommand,ValidationResult>,AddressCommandHandler>();
+			services.AddScoped<IRequestHandler<CreateUserAddressCommand, ValidationResult>, AddressCommandHandler>();
+			services.AddScoped<IRequestHandler<DeleteUserAddressCommand, ValidationResult>, AddressCommandHandler>();
+			services.AddScoped<IRequestHandler<UpdateUserAddressCommand, ValidationResult>, AddressCommandHandler>();
 
 			// Domain - Queries
-			services.AddScoped<IRequestHandler<GetAllUsersQuery, IEnumerable<UserModel>>,UserQueryHandler>();
+			services.AddScoped<IRequestHandler<GetAllUsersQuery, IEnumerable<UserModel>>, UserQueryHandler>();
 			services.AddScoped<IRequestHandler<GetUserByIdQuery, UserModel>, UserQueryHandler>();
-			services.AddScoped<IRequestHandler<GetAllUserAddressesQuery, IEnumerable<AddressModel>>,AddressQueryHandler>();
-			services.AddScoped<IRequestHandler<GetUserAddressByIdQuery, AddressModel>,AddressQueryHandler>();
+			services.AddScoped<IRequestHandler<GetAllUserAddressesQuery, IEnumerable<AddressModel>>, AddressQueryHandler>();
+			services.AddScoped<IRequestHandler<GetUserAddressByIdQuery, AddressModel>, AddressQueryHandler>();
 			services.AddScoped<IRequestHandler<GetUserAddressesByUserId, IEnumerable<AddressModel>>, AddressQueryHandler>();
 			services.AddScoped<IRequestHandler<CheckAdressByUserIdQuery, bool>, AddressQueryHandler>();
 			services.AddScoped<IRequestHandler<UserLoginQuery, Guid?>, UserQueryHandler>();
-
-			//saga
-			services.AddMyMassTransitStateMachine<CreateUserMediaStateMachine, CreateUserMediaState>(configuration, RabbitMqQueues.StateMachine_UserMedia);
-
 		}
 	}
 }
