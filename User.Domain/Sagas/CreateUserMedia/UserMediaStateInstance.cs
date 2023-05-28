@@ -1,12 +1,10 @@
-﻿using Automatonymous;
-using MassTransit;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MassTransit;
 
 namespace User.Domain.Sagas.CreateUserMedia
 {
-	public class CreateUserMediaState : SagaStateMachineInstance, ISagaVersion
+	public class UserMediaStateInstance : SagaStateMachineInstance, ISagaVersion
 	{
-		public CreateUserMediaState(Guid correlationId)
+		public UserMediaStateInstance(Guid correlationId)
 		{
 			CorrelationId = correlationId;
 		}

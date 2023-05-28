@@ -5,20 +5,20 @@ using MassTransit;
 
 namespace User.Domain.Sagas.CreateUserMedia
 {
-	public class CreateUserMediaStateMachine : MassTransitStateMachine<CreateUserMediaState>
+    public class UserMediaStateMachine : MassTransitStateMachine<UserMediaStateInstance>
 	{
 		//https://github.com/gncyyldz/Saga-Orchestration/tree/master/Order.API
 		//https://www.gencayyildiz.com/blog/microservice-saga-commands-orchestration-implemantasyonu-ile-transaction-yonetimi/	
 
 		public Event<UserMediaCreatedEvent> UserMediaCreatedEvent { get; set; }
-		public Event<UserMediaRejectedEvent> UserMediaRejectedEvent { get; set; }
-		public Event<UserMediaSuccessfulEvent> UserMediaSuccessfulEvent { get; set; }
+		public Event<MediaRejectedEvent> UserMediaRejectedEvent { get; set; }
+		public Event<MediaSuccessfulEvent> UserMediaSuccessfulEvent { get; set; }
 
 		public State UserMediaCreated { get; set; }
 		public State UserMediaRejected { get; set; }
 		public State UserMediaSuccessful { get; set; }
 
-		public CreateUserMediaStateMachine()
+		public UserMediaStateMachine()
 		{
 			//State Instance'da ki hangi property'nin sipariş sürecindeki state'i tutacağı bildiriliyor.
 			//Yani artık tüm event'ler CurrentState property'sin de tutulacaktır!
@@ -52,7 +52,7 @@ namespace User.Domain.Sagas.CreateUserMedia
 				})
 				.TransitionTo(UserMediaCreated)
 				.Send(new Uri($"queue:{RabbitMqQueues.Media_MediaCreatedEventQueue}"),
-				context => new MediaCreatedEvent(context.Instance.CorrelationId, context.Instance.ImageId, context.Data.FileExtension,context.Data.MediaData,context.Data.CustomType,context.Data.ImageOwnerId)
+				context => new MediaCreatedEvent(context.Instance.CorrelationId, context.Instance.ImageId, context.Data.FileExtension, context.Data.MediaData, context.Data.CustomType, context.Data.ImageOwnerId)
 				)); ;
 
 			During(UserMediaCreated,
@@ -62,6 +62,7 @@ namespace User.Domain.Sagas.CreateUserMedia
 				//{
 				//	context.Instance.Version = 1;
 				//})
+				.Then(x => Console.WriteLine("başarısız resim işlemi :" + x.Message.Id))
 				.TransitionTo(UserMediaRejected)
 				.Finalize(),
 
@@ -70,6 +71,7 @@ namespace User.Domain.Sagas.CreateUserMedia
 				{
 					context.Instance.ImageOwnerId = context.Data.OwnerId;
 				})
+				.Then(x => Console.WriteLine("başarılı resim işlemi :" + x.Message.Id))
 				.TransitionTo(UserMediaSuccessful)
 				.Finalize()
 				);
