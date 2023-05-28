@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Events\Events.csproj" />
+    <ProjectReference Include="..\Grpc\Grpc.csproj" />
     <ProjectReference Include="..\HairdresserService.Domain\HairdresserService.Domain.csproj" />
   </ItemGroup>
 

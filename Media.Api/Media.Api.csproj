@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Media.Application\Media.Application.csproj" />
     <ProjectReference Include="..\Media.Domain\Media.Domain.csproj" />
     <ProjectReference Include="..\Media.Infrastructure\Media.Infrastructure.csproj" />
+    <ProjectReference Include="..\MessageBroker\Common.csproj" />
     <ProjectReference Include="..\Swagger\Swagger.csproj" />
   </ItemGroup>
 
