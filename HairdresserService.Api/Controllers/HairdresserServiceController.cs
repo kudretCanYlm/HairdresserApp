@@ -44,7 +44,7 @@ namespace HairdresserService.Api.Controllers
 
 			return Ok(result);
 		}
-		//resimlerin idsinide getir
+		
 		[HttpGet, Route("GetHairdresserService/{serviceId:guid}")]
 		public async Task<IActionResult> GetHairdresserService(Guid serviceId)
 		{
@@ -55,5 +55,27 @@ namespace HairdresserService.Api.Controllers
 
 			return Ok(result);
 		}
+		
+
+		[HttpPost,Route("UpdateHairdresserService")]
+		public async Task<IActionResult> UpdateHairdresserService([FromBody] UpdateHairdresserServiceDto updateHairdresserServiceDto)
+		{
+			var userId = (Guid)GrpcAuthExtension.GetCurrentUserId(HttpContext);
+			
+			var status = await _hairdresserGrpcService.CheckHairdresserIdAndUserId(updateHairdresserServiceDto.HairdresserId, userId);
+
+			if (!status)
+				return BadRequest("This user is not owner");
+
+			var result = await _hairdresserServiceAppService.UpdateHairdresserService(updateHairdresserServiceDto);
+
+			if (!result.IsValid)
+				BadRequest(result.Errors);
+
+			return Ok(result);
+
+
+		}
+
 	}
 }
