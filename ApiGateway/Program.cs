@@ -1,6 +1,20 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+using ApiGateway;
 
-app.MapGet("/", () => "Hello World!");
+internal class Program
+{
+	private static void Main(string[] args)
+	{
+		CreateHostBuilder(args).Build().Run();
+	}
 
-app.Run();
+	public static IHostBuilder CreateHostBuilder(string[] args) =>
+		Host.CreateDefaultBuilder(args)
+		.ConfigureAppConfiguration((hosting, config) =>
+		{
+			config.AddJsonFile("ocelot.json", false, true);
+		})
+		.ConfigureWebHostDefaults(webBuilder =>
+		{
+			webBuilder.UseStartup<Startup>();
+		});
+}

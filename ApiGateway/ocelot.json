@@ -1,0 +1,99 @@
+{
+
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/Appointment/{url}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7200
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Appointment/{url}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    //{
+    //  "DownstreamPathTemplate": "/{url}",
+    //  "DownstreamScheme": "https",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "localhost",
+    //      "Port": 8102
+    //    }
+    //  ],
+    //  "UpstreamPathTemplate": "/au/{url}",
+    //  "UpstreamHttpMethod": [ "Get", "Post" ]
+    //},
+    {
+      "DownstreamPathTemplate": "/Hairdresser/{url}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Hairdresser/{url}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/HairdresserService/{url}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7060
+        }
+      ],
+      "UpstreamPathTemplate": "/api/HairdresserService/{url}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    //{
+    //  "DownstreamPathTemplate": "/{url}",
+    //  "DownstreamScheme": "https",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "localhost",
+    //      "Port": 8105
+    //    }
+    //  ],
+    //  "UpstreamPathTemplate": "/m/{url}",
+    //  "UpstreamHttpMethod": [ "Get", "Post" ]
+    //},
+    //{
+    //  "DownstreamPathTemplate": "/hubs/{url}",
+    //  "DownstreamScheme": "https",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "localhost",
+    //      "Port": 7028
+    //    }
+    //  ],
+    //  "UpstreamPathTemplate": "/api/hubs/{url}",
+    //  "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+    //  "DownstreamHeaders": {
+    //    "Upgrade": "websocket",
+    //    "Connection": "Upgrade"
+    //  },
+    //  "UpstreamHost": null,
+    //  "WebSockets": true
+    //},
+    {
+      "DownstreamPathTemplate": "/User/{url}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7230
+        }
+      ],
+      "UpstreamPathTemplate": "/api/User/{url}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    }
+  ]
+  //"GlobalConfiguration": {
+  //  "BaseUrl": "https://localhost:5005"
+  //}
+
+}
