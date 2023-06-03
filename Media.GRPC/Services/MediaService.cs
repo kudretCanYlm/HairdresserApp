@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Google.Protobuf.Collections;
 using Grpc.Core;
 using Grpc.Media.Protos;
 using Media.Application.Interfaces.Media;
@@ -55,6 +54,31 @@ namespace Media.GRPC.Services
 				};
 
 			return _mapper.Map<MediaModel>(media);
+		}
+
+		public override async Task<MediaCountModel> GetImageCount(GetImageCountRequest request, ServerCallContext context)
+		{
+			var count = await _mediaAppService.GetMediaCountByImageOwnerIdAndType(Guid.Parse(request.ImageOwnerId), request.Type);
+			
+			var mediaCountModel=new MediaCountModel 
+			{
+				Count=count 
+			};
+
+			return mediaCountModel;
+		}
+
+		public override async Task<IsMediaAvailableModel> IsMediaAvailable(IsMediaAvailableRequest request, ServerCallContext context)
+		{
+			var isAvaliable = await _mediaAppService.IsMediaAvailable(Guid.Parse(request.Id),Guid.Parse(request.ImageOwnerId));
+
+			var isMediaAvaliableModel = new IsMediaAvailableModel
+			{
+				IsAvaliable = isAvaliable
+			};
+
+			return isMediaAvaliableModel;
+
 		}
 	}
 }
