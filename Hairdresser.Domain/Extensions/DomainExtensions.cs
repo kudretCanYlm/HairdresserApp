@@ -42,6 +42,7 @@ namespace Hairdresser.Domain.Extensions
 			services.AddScoped<IRequestHandler<GetHairdresserByIdQuery, HairdresserModel>, HairdresserQueryHandler>();
 			services.AddScoped<IRequestHandler<GetAllHairdresserByFilterQuery, IPagedList<HairdresserModel>>, HairdresserQueryHandler>();
 			services.AddScoped<IRequestHandler<CheckHairdresserIdAndUserIdQuery, bool>, HairdresserQueryHandler>();
+			services.AddScoped<IRequestHandler<CheckHairdresserActiveQuery, bool>, HairdresserQueryHandler>();
 
 
 		}
