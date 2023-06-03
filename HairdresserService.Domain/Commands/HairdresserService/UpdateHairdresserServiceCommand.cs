@@ -1,4 +1,6 @@
-﻿namespace HairdresserService.Domain.Commands.HairdresserService
+﻿using Common.Media;
+
+namespace HairdresserService.Domain.Commands.HairdresserService
 {
 	public class UpdateHairdresserServiceCommand:HairdresserServiceCommand
 	{
@@ -15,5 +17,7 @@
 			ServiceDuration = serviceDuration;
 			HairdresserId = hairdresserId;
 		}
+
+		public IEnumerable<MediaUpdateModel> Medias { get; set; }
 	}
 }
