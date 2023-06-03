@@ -16,7 +16,10 @@ builder.Services.UseDomain(typeof(Program));
 builder.Services.UseMediaInfrastructure(x => x.UseSqlServer(builder.Configuration.GetConnectionString("MediaServiceDb")));
 builder.Services.UseMediaApplication();
 builder.Services.AddMongoDbEventStore(builder.Configuration);
-builder.Services.AddMyMassTransit(builder.Configuration, Assembly.GetExecutingAssembly(),(RabbitMqQueues.Media_MediaCreatedEventQueue, typeof(MediaCreatedEventConsumer)));
+builder.Services.AddMyMassTransit(builder.Configuration, Assembly.GetExecutingAssembly(),
+	(RabbitMqQueues.Media_MediaCreatedEventQueue, typeof(MediaCreatedEventConsumer)),
+	(RabbitMqQueues.Media_MediaDeletedEventQueue, typeof(MediaDeletedEventConsumer)),
+	(RabbitMqQueues.Media_MediaUpdatedEventQueue, typeof(MediaUpdatedEventConsumer)));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
