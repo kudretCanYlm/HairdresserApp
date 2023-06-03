@@ -8,5 +8,6 @@ namespace Appointment.Domain.Interfaces
 		Task<AppointmentModel> GetAppointmentByIdAndUserId(Guid id, Guid userId);
 		Task<AppointmentModel> GetAppointmentByIdAndHairdresserId(Guid id, Guid hairdresserId);
 		Task<IEnumerable<AppointmentModel>> GetAllAppointmentsByUserId(Guid userId);
+		Task<bool> CheckIsthereAnAppointment(Guid id, DateTime appointmentDate, TimeSpan appointmentStartTime, TimeSpan serviceDuration);
 	}
 }
