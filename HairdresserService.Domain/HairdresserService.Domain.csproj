@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Database\Database.csproj" />
     <ProjectReference Include="..\Events\Events.csproj" />
     <ProjectReference Include="..\Filters\Filters.csproj" />
+    <ProjectReference Include="..\Grpc\Grpc.csproj" />
     <ProjectReference Include="..\MessageBroker\Common.csproj" />
   </ItemGroup>
 
