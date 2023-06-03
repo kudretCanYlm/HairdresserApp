@@ -1,20 +1,23 @@
 ﻿using NetDevPack.Messaging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Events.Media
 {
-	public class MediaDeletedEvent:Event
+	public class MediaDeletedEvent:Event, MassTransit.CorrelatedBy<Guid>
 	{
-		public MediaDeletedEvent(Guid id)
+		public MediaDeletedEvent()
+		{
+
+		}
+		public MediaDeletedEvent(Guid correlationId,Guid id, Guid imageOwnerId)
 		{
 			Id = id;
-			AggregateId= id;
+			AggregateId = id;
+			ImageOwnerId = imageOwnerId;
+			CorrelationId = correlationId;
 		}
 
 		public Guid Id { get; set; }
+		public Guid ImageOwnerId { get; set; }
+		public Guid CorrelationId { get; }
 	}
 }
