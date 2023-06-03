@@ -5,7 +5,7 @@ using Grpc.Hairdresser;
 using Grpc.Media;
 using HairdresserService.Application.Extensions;
 using HairdresserService.Domain.Extensions;
-using HairdresserService.Domain.Sagas.CreateHairdresserServiceMedia;
+using HairdresserService.Domain.Sagas.HairdresserServiceMedia;
 using HairdresserService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Swagger;
