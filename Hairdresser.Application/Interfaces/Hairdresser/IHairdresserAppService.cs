@@ -7,6 +7,7 @@ namespace Hairdresser.Application.Interfaces.Hairdresser
 {
 	public interface IHairdresserAppService: IDisposable
 	{
+		Task<bool> CheckHairdresserActive(Guid id, DateTime appointmentDate, TimeSpan appointmentStartTime, TimeSpan serviceDuration);
 		Task<bool> CheckHairdresserByIdAndUserId(Guid id,Guid userId);
 		Task<IEnumerable<HairdresserImageDto>> GetAllHairdresserByFilter(PageSearchArgs pageSearchArgs);
 		Task<IEnumerable<HairdresserDto>> GetAllHairdressers();

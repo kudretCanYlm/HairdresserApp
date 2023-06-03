@@ -94,14 +94,19 @@ namespace Hairdresser.Application.Services.Hairdresser
 
 			return result;
 		}
+		public async Task<bool> CheckHairdresserActive(Guid id, DateTime appointmentDate, TimeSpan appointmentStartTime, TimeSpan serviceDuration)
+		{
+			var query=new CheckHairdresserActiveQuery(id,appointmentDate,appointmentStartTime,serviceDuration);
+
+			var result = await _mediator.Send(query);
+
+			return result;
+		}
 
 		public void Dispose()
 		{
 			GC.SuppressFinalize(this);
 		}
-
-
-
 
 	}
 }
