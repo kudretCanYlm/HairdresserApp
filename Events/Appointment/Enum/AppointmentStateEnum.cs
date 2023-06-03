@@ -4,8 +4,8 @@ namespace Events.Appointment.Enum
 {
 	public enum AppointmentStateEnum
 	{
-		[Display(Name = "Bekleniyor")]
-		Waiting,
+		[Display(Name = "Oluşturuldu")]
+		Created,
 		[Display(Name = "Onaylandı")]
 		Approved,
 		[Display(Name = "Reddedildi")]
