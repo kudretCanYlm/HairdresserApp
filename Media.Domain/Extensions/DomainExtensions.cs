@@ -40,8 +40,8 @@ namespace Media.Domain.Extensions
 			services.AddScoped<IRequestHandler<GetAllMediasQuery, IEnumerable<MediaModel>>, MediaQueryHandler>();
 			services.AddScoped<IRequestHandler<GetMediaByImageOwnerIdAndTypeQuery, MediaModel>, MediaQueryHandler>();
 			services.AddScoped<IRequestHandler<GetMediaListByImageOwnerIdAndTypeQuery, IEnumerable<MediaModel>>, MediaQueryHandler>();
-
-
+			services.AddScoped<IRequestHandler<GetMediaCountByImageOwnerIdAndTypeQuery, int>, MediaQueryHandler>();
+			services.AddScoped<IRequestHandler<IsMediaAvailableQuery, bool>, MediaQueryHandler>();
 		}
 	}
 }
