@@ -3,7 +3,9 @@ syntax = "proto3";
 option csharp_namespace = "Grpc.Hairdresser.Protos";
 
 service HairdresserProtoService{
-	rpc CheckHairdresserIdAndUserId(CheckHairdresserIdAndUserIdRequest) returns (CheckHairdresserModel); 
+	rpc CheckHairdresserIdAndUserId(CheckHairdresserIdAndUserIdRequest) returns (CheckHairdresserModel);
+	rpc CheckHairdresserActive(CheckHairdresserActiveRequest) returns (CheckHairdresserActiveModel);
+	rpc GetHairdresserOwnerId(GetHairdresserOwnerIdRequest) returns (GetHairdresserOwnerIdModel);
 }
 
 message CheckHairdresserIdAndUserIdRequest{
@@ -11,6 +13,25 @@ message CheckHairdresserIdAndUserIdRequest{
 	string HairdresserId=2;
 }
 
+message CheckHairdresserActiveRequest{
+	string HairdresserId=1;
+	string AppointmentDate=2;
+	string AppointmentStartTime=3;
+	string ServiceDuration=4;
+}
+
+message GetHairdresserOwnerIdRequest{
+	string HairdresserId=1;
+}
+
 message CheckHairdresserModel{
 	bool IsThere=1;
+}
+
+message CheckHairdresserActiveModel {
+	bool IsActive=1;
+}
+
+message GetHairdresserOwnerIdModel{
+	string OwnerId=1;
 }
