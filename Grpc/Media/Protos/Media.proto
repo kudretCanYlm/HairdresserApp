@@ -5,6 +5,8 @@ option csharp_namespace = "Grpc.Media.Protos";
 service MediaProtoService{
 	rpc GetAllMediasByOwnerId(GetAllMediasByOwnerIdAndTypeRequest) returns (MediaModelList);
 	rpc GetMediaByOwnerIdAndType(GetMediaByOwnerIdAndTypeRequest) returns (MediaModel);
+	rpc GetImageCount(GetImageCountRequest) returns (MediaCountModel);
+	rpc IsMediaAvailable(IsMediaAvailableRequest) returns (IsMediaAvailableModel);
 }
 
 message GetAllMediasByOwnerIdAndTypeRequest{
@@ -17,6 +19,17 @@ message GetMediaByOwnerIdAndTypeRequest {
 	string Type=2;
 }
 
+message GetImageCountRequest {
+	string ImageOwnerId=1;
+	string Type=2;
+}
+
+message IsMediaAvailableRequest{
+	string Id=1;
+	string ImageOwnerId=2;
+
+}
+
 message MediaModelList {
 	repeated MediaModel Medias=1;
 }
@@ -25,4 +38,12 @@ message MediaModel {
 	string Id=1;
 	string Base64Media=2;
 	string ImageOwnerId=3;
+}
+
+message MediaCountModel {
+	int32 Count=1;
+}
+
+message IsMediaAvailableModel{
+	bool IsAvaliable=1;
 }

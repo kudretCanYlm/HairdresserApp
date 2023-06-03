@@ -37,5 +37,32 @@ namespace Grpc.Media.ClientServices
 
 			return media;
 		}
+
+		public async Task<int> GetMediaCount(Guid ownerId, string type)
+		{
+			var request = new GetImageCountRequest
+			{
+				ImageOwnerId = ownerId.ToString(),
+				Type = type
+			};
+
+			var countModel=await _mediaProtoService.GetImageCountAsync(request);
+
+			return countModel.Count;
+		}
+
+		public async Task<bool> IsMediaAvailable(Guid id,Guid ownerId)
+		{
+			var request = new IsMediaAvailableRequest
+			{
+				Id = id.ToString(),
+				ImageOwnerId = ownerId.ToString(),
+			};
+
+			var result=await _mediaProtoService.IsMediaAvailableAsync(request);
+			
+			return result.IsAvaliable;
+
+		}
 	}
 }
