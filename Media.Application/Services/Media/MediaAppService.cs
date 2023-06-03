@@ -50,6 +50,19 @@ namespace Media.Application.Services.Media
 			return _mapper.Map<IEnumerable<MediaDto>>(result);
 		}
 
+		public async Task<int> GetMediaCountByImageOwnerIdAndType(Guid ownerId, string type)
+		{
+			var count = await _mediator.Send(new GetMediaCountByImageOwnerIdAndTypeQuery(type, ownerId));
+			return count;
+		}
+
+		public async Task<bool> IsMediaAvailable(Guid id, Guid ownerId)
+		{
+			var isAvaliable = await _mediator.Send(new IsMediaAvailableQuery(id, ownerId));
+
+			return isAvaliable;
+		}
+
 		public async Task<IList<MediaHistoryData>> GetAllHistoryAsync(Guid id)
 		{
 			return MediaHistory.ToJavaScriptMediaHistory(await _eventStoreRepository.All(id));
@@ -67,13 +80,10 @@ namespace Media.Application.Services.Media
 			return await _mediatorHandler.SendCommand(command);
 		}
 
-
-
 		public void Dispose()
 		{
 			GC.SuppressFinalize(this);
 		}
-
 
 	}
 }
