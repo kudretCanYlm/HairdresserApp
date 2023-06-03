@@ -6,12 +6,12 @@ namespace Appointment.Domain.Commands.Appointment
 	{
 		public CreateAppointmentCommand()
 		{
-			AppointmentState = AppointmentStateEnum.Waiting;
+			AppointmentState = AppointmentStateEnum.Created;
 		}
 
 		public CreateAppointmentCommand(string notes, DateTime appointmentDate, TimeSpan appointmentStartTime, Guid userId, Guid hairdresserServiceId, Guid hairdresserId)
 		{
-			AppointmentState= AppointmentStateEnum.Waiting;
+			AppointmentState= AppointmentStateEnum.Created;
 			Notes= notes;
 			AppointmentDate= appointmentDate;
 			AppointmentStartTime= appointmentStartTime;
