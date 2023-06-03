@@ -27,6 +27,10 @@
 			<Link>Hairdresser\Protos\Hairdresser.proto</Link>
 		</Protobuf>
 		
+		<Protobuf Include="HairdresserService\Protos\HairdresserService.proto" GrpcServices="Client">
+			<Link>HairdresserService\Protos\HairdresserService.proto</Link>
+		</Protobuf>
+		
 	</ItemGroup>
 	
 	
