@@ -81,9 +81,16 @@ namespace HairdresserService.Application.Services
 
 			var images = await _mediaGrpcService.GetAllMediasByOwnerIdAndTypeAsync(serviceId, MediaTypes.HAIRDRESSER_SERVICE_MULTI);
 
-			serviceWithImages.Base64MediaList = images.Select(x=>x.Base64Media).ToList();
+			serviceWithImages.Base64MediaList = images;
 
 			return serviceWithImages;
+		}
+
+		public async Task<HairdresserServiceDto> GetHairdresserServiceByIdAndHairdresserId(Guid id, Guid hairdresserId)
+		{
+			var result = await _mediator.Send(new GetHairdresserServiceByIdAndHairdresserIdQuery(id,hairdresserId));
+
+			return _mapper.Map<HairdresserServiceDto>(result);
 		}
 
 		public async Task<IEnumerable<HairdresserServiceHistoryData>> GetAllHistoryAsync(Guid id)

@@ -6,6 +6,7 @@ namespace HairdresserService.Application.Interfaces.HairdresserService
 {
 	public interface IHairdresserServiceAppService:IDisposable
 	{
+		Task<HairdresserServiceDto> GetHairdresserServiceByIdAndHairdresserId(Guid id,Guid hairdresserId);
 		Task<HairdresserServiceImageDto> GetAllHairdresserServiceWithImagesById(Guid serviceId);
 		Task<IEnumerable<HairdresserServiceDto>> GetAllHairdresserServicesByHairdresserId(Guid hairdresserId);
 		Task<ValidationResult> ActivateHairdresserService(ActivateHairdresserServiceDto activateHairdresserServiceDto);
