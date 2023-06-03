@@ -5,7 +5,8 @@ using MediatR;
 namespace HairdresserService.Domain.Queries.HairdresserService
 {
 	public class HairdresserServiceQueryHandler : IRequestHandler<GetAllHairdresserServicesByHairdresserIdQuery, IEnumerable<HairdresserServiceModel>>,
-													IRequestHandler<GetHairdresserServiceByIdQuery, HairdresserServiceModel>
+													IRequestHandler<GetHairdresserServiceByIdQuery, HairdresserServiceModel>,
+													IRequestHandler<GetHairdresserServiceByIdAndHairdresserIdQuery, HairdresserServiceModel>
 	{
 		private readonly IHairdresserServiceRepository _hairdresserServiceRepository;
 
@@ -25,6 +26,14 @@ namespace HairdresserService.Domain.Queries.HairdresserService
 		{
 			var result = await _hairdresserServiceRepository.GetById(request.Id);
 
+			return result;
+		}
+
+		public async Task<HairdresserServiceModel> Handle(GetHairdresserServiceByIdAndHairdresserIdQuery request, CancellationToken cancellationToken)
+		{
+			//add Specification for the IsItActive
+			var result =await _hairdresserServiceRepository.Get(x=>x.Id== request.Id && x.HairdresserId==request.HairdresserId &&x.IsItActive==true);
+			
 			return result;
 		}
 	}
