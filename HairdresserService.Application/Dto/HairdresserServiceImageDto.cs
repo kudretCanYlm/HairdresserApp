@@ -1,4 +1,6 @@
-﻿namespace HairdresserService.Application.Dto
+﻿using Grpc.Media.Protos;
+
+namespace HairdresserService.Application.Dto
 {
 	public class HairdresserServiceImageDto
 	{
@@ -8,6 +10,6 @@
 		public TimeSpan ServiceDuration { get; set; }
 		public Guid HairdresserId { get; set; }
 		public bool IsItActive { get; set; }
-		public IEnumerable<string> Base64MediaList { get; set; }
+		public IEnumerable<MediaModel> Base64MediaList { get; set; }
 	}
 }
