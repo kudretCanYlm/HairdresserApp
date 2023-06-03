@@ -10,7 +10,8 @@ namespace Hairdresser.Domain.Queries.Hairdresser
 	public class HairdresserQueryHandler : IRequestHandler<GetAllHairdressersQuery, IEnumerable<HairdresserModel>>,
 										IRequestHandler<GetHairdresserByIdQuery, HairdresserModel>,
 										IRequestHandler<GetAllHairdresserByFilterQuery, IPagedList<HairdresserModel>>,
-										IRequestHandler<CheckHairdresserIdAndUserIdQuery,bool>
+										IRequestHandler<CheckHairdresserIdAndUserIdQuery, bool>,
+										IRequestHandler<CheckHairdresserActiveQuery, bool>
 	{
 		private readonly IHairdresserRepository _hairdresserRepository;
 
@@ -78,13 +79,13 @@ namespace Hairdresser.Domain.Queries.Hairdresser
 			}
 
 			var pagedList = new PagedList<HairdresserModel>();
-			
-			await pagedList.CreatePagedList(query, 
-				new PagingArgs 
+
+			await pagedList.CreatePagedList(query,
+				new PagingArgs
 				{
-					PageIndex = args.PageIndex, 
-					PageSize = args.PageSize, 
-					PagingStrategy = args.PagingStrategy 
+					PageIndex = args.PageIndex,
+					PageSize = args.PageSize,
+					PagingStrategy = args.PagingStrategy
 				},
 				orderByList, filterList);
 
@@ -96,6 +97,29 @@ namespace Hairdresser.Domain.Queries.Hairdresser
 			var result = await _hairdresserRepository.GetManyQuery(x => x.Id == request.Id && x.OwnerId == request.UserId).AnyAsync();
 
 			return result;
+		}
+
+		public async Task<bool> Handle(CheckHairdresserActiveQuery request, CancellationToken cancellationToken)
+		{
+			//add to repository
+			//add spec
+			var hairdresser = await _hairdresserRepository.GetById(request.Id);
+
+			if(hairdresser==null)
+				return false;
+
+			int day = (int)request.AppointmentDate.DayOfWeek;
+
+			if (!(hairdresser.WorkDays.Split(',').Any(x => x == day.ToString())))
+				return false;
+
+			if (!(hairdresser.CloseHour > request.AppointmentStartTime && hairdresser.OpenHour < request.AppointmentStartTime))
+				return false;
+
+			if (!(hairdresser.CloseHour > request.AppointmentStartTime.Add(request.ServiceDuration) && hairdresser.OpenHour < request.AppointmentStartTime.Add(request.ServiceDuration)))
+				return false;
+
+			return true;
 		}
 	}
 }
