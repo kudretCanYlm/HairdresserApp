@@ -19,7 +19,7 @@ internal class Program
 		//builder.Host.UseSerilog(LoggingExtensions.Configure);
 		//Log.Logger = LoggingExtensions.AddMyLogging(builder.Configuration);
 
-		
+
 
 		// Add services to the container.
 		builder.Services.AddAuthGrpc(builder.Configuration["AuthUrl"]);
