@@ -6,6 +6,7 @@ namespace Appointment.Application.Interfaces.Appointment
 {
 	public interface IAppointmentAppService:IDisposable
 	{
+		Task<AppointmentDto> GetAppointmentById(Guid id);
 		Task<IEnumerable<AppointmentDto>> GetAllAppointmentsByUserId(Guid userId);
 		Task<AppointmentDto> GetAppointmentByIdAndUserId(Guid id,Guid userId);
 		Task<ValidationResult> ApproveAppointment(AppointmentStateHairdresserDto appointmentStateHairdresserDto);

@@ -27,17 +27,24 @@ namespace Appointment.Application.Services
 		}
 		public async Task<IEnumerable<AppointmentDto>> GetAllAppointmentsByUserId(Guid userId)
 		{
-			var result=await _mediator.Send(new GetAllAppointmentsByUserId(userId));
+			var result=await _mediator.Send(new GetAllAppointmentsByUserIdQuery(userId));
 
 			return _mapper.Map<IEnumerable<AppointmentDto>>(result);
 		}
 
 		public async Task<AppointmentDto> GetAppointmentByIdAndUserId(Guid id, Guid userId)
 		{
-			var result = await _mediator.Send(new GetAppointmentByIdAndUserId(id,userId));
+			var result = await _mediator.Send(new GetAppointmentByIdAndUserIdQuery(id,userId));
 
 			return _mapper.Map<AppointmentDto>(result);
 
+		}
+
+		public async Task<AppointmentDto> GetAppointmentById(Guid id)
+		{
+			var result=await _mediator.Send(new GetAppointmentByIdQuery(id));
+
+			return _mapper.Map<AppointmentDto>(result);
 		}
 
 		public async Task<ValidationResult> ApproveAppointment(AppointmentStateHairdresserDto appointmentStateHairdresserDto)
@@ -96,6 +103,5 @@ namespace Appointment.Application.Services
 		{
 			GC.SuppressFinalize(this);
 		}
-
 	}
 }
