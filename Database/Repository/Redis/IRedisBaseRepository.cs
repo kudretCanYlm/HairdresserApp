@@ -9,6 +9,7 @@ namespace Database.Repository.Redis
 		Task UpdateAsync(T model);
 		Task DeleteAsync(T model);
 		Task DeleteWhere(Expression<Func<T, bool>> where);
+		Task DeleteMulti(Expression<Func<T, bool>> where);
 		Task<IEnumerable<T>> GetAllByWhereAsync(Expression<Func<T,bool>> where);
 		Task<T> GetSingle(Expression<Func<T, bool>> where);
 

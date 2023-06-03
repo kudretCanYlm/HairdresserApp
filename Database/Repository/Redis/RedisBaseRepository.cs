@@ -18,7 +18,6 @@ namespace Database.Repository.Redis
 
 		public async Task DeleteAsync(T model)
 		{
-			
 			await _redisDb.DeleteAsync(model);
 		}
 
@@ -32,8 +31,16 @@ namespace Database.Repository.Redis
 			await DeleteAsync(first);
 		}
 
+		public async Task DeleteMulti(Expression<Func<T, bool>> where)
+		{
+			var list=GetAllByWhereAsync(where);
+			if(list != null)
+				await _redisDb.DeleteAsync((IEnumerable<T>)list);
+		}
+
 		public async Task<IEnumerable<T>> GetAllByWhereAsync(Expression<Func<T, bool>> where)
 		{
+
 			var list = await _redisDb.Where(where).ToListAsync();
 			return list;
 		}
