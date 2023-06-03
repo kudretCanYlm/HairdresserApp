@@ -35,17 +35,20 @@ namespace HairdresserService.Domain.Extensions
 
 
 			// Domain - Commands
+			//test later
+			//services.AddScoped(typeof(IRequestHandler<HairdresserServiceCommand, ValidationResult>), typeof(HairdresserServiceCommandHandler));
 			services.AddScoped<IRequestHandler<ActivateHairdresserServiceCommand, ValidationResult>, HairdresserServiceCommandHandler>();
 			services.AddScoped<IRequestHandler<CreateHairdresserServiceCommand, ValidationResult>, HairdresserServiceCommandHandler>();
 			services.AddScoped<IRequestHandler<DeactivateHairdresserServiceCommand, ValidationResult>, HairdresserServiceCommandHandler>();
 			services.AddScoped<IRequestHandler<DeleteHairdresserServiceCommand, ValidationResult>, HairdresserServiceCommandHandler>();
 			services.AddScoped<IRequestHandler<UpdateHairdresserServiceCommand, ValidationResult>, HairdresserServiceCommandHandler>();
-			//services.AddScoped<IRequestHandler<HairdresserServiceCommand, ValidationResult>, HairdresserServiceCommandHandler>();
-
 
 			// Domain - Queries
+			//test later
+			//services.AddScoped(typeof(IRequestHandler<HairdresserServiceQuery,>), typeof(HairdresserServiceQueryHandler));
 			services.AddScoped<IRequestHandler<GetAllHairdresserServicesByHairdresserIdQuery, IEnumerable<HairdresserServiceModel>>, HairdresserServiceQueryHandler>();
 			services.AddScoped<IRequestHandler<GetHairdresserServiceByIdQuery, HairdresserServiceModel>, HairdresserServiceQueryHandler>();
+			services.AddScoped<IRequestHandler<GetHairdresserServiceByIdAndHairdresserIdQuery, HairdresserServiceModel>, HairdresserServiceQueryHandler>();
 
 
 		}
