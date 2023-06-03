@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "Grpc.HairdresserService.Protos";
+
+service HairdresserServiceProtoService{
+	rpc GetHairdresserService(GetHairdresserServiceRequest) returns (HairdresserServiceModel);
+	rpc GetHairdresserServiceNameById(GetHairdresserServiceRequest) returns (GetHairdresserServiceNameByIdModel);
+}
+
+message GetHairdresserServiceRequest{
+	string HairdresserId=1;
+	string ServiceId=2;
+}
+
+message HairdresserServiceModel{
+	string ServiceDuration=1;
+	double Price=2;
+	bool isAny=3;
+}
+
+message GetHairdresserServiceNameByIdModel{
+	string ServiceName=1;
+}
