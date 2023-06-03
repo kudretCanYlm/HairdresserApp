@@ -2,6 +2,7 @@
 using Common.Media;
 using Events.HairdresserService;
 using Events.MassTransitOptions;
+using Grpc.Media.ClientServices;
 using HairdresserService.Domain.Interfaces;
 using HairdresserService.Domain.Models;
 using MassTransit;
@@ -20,18 +21,20 @@ namespace HairdresserService.Domain.Commands.HairdresserService
 		private readonly IHairdresserServiceRepository _hairdresserServiceRepository;
 		private readonly IMapper _mapper;
 		private readonly ISendEndpointProvider _sendEndpointProvider;
+		private readonly MediaGrpcService _mediaGrpcService;
 
-		public HairdresserServiceCommandHandler(IHairdresserServiceRepository hairdresserServiceRepository, IMapper mapper, ISendEndpointProvider sendEndpointProvider)
+		public HairdresserServiceCommandHandler(IHairdresserServiceRepository hairdresserServiceRepository, IMapper mapper, ISendEndpointProvider sendEndpointProvider, MediaGrpcService mediaGrpcService)
 		{
 			_hairdresserServiceRepository = hairdresserServiceRepository;
 			_mapper = mapper;
 			_sendEndpointProvider = sendEndpointProvider;
+			_mediaGrpcService = mediaGrpcService;
 		}
 
 		public async Task<FluentValidation.Results.ValidationResult> Handle(ActivateHairdresserServiceCommand request, CancellationToken cancellationToken)
 		{
 			var hairdresserService = await _hairdresserServiceRepository.GetByIdAndHairdresserId(request.Id, request.HairdresserId);
-			
+
 			if (hairdresserService == null)
 			{
 				AddError("Service Not Found");
@@ -119,6 +122,25 @@ namespace HairdresserService.Domain.Commands.HairdresserService
 
 		public async Task<FluentValidation.Results.ValidationResult> Handle(UpdateHairdresserServiceCommand request, CancellationToken cancellationToken)
 		{
+			foreach (var image in request.Medias.Where(x => x.Operation != OperationEnum.Create))
+			{
+				var status = await _mediaGrpcService.IsMediaAvailable(image.Id,request.Id);
+
+				if (!status)
+				{
+					AddError("Deleted Media Not Found");
+					return ValidationResult;
+				}
+			}
+
+			var count = 5 - await _mediaGrpcService.GetMediaCount(request.Id, MediaTypes.HAIRDRESSER_SERVICE_MULTI);
+
+			if (!MediaUpdateModel.SetSizeValidatinon(request.Medias, count))
+			{
+				AddError("Too Many Media");
+				return ValidationResult;
+			}
+
 			var hairdresserService = await _hairdresserServiceRepository.GetByIdAndHairdresserId(request.Id, request.HairdresserId);
 
 			if (hairdresserService == null)
@@ -127,11 +149,61 @@ namespace HairdresserService.Domain.Commands.HairdresserService
 				return ValidationResult;
 			}
 
-			hairdresserService=_mapper.Map(request,hairdresserService);
+			hairdresserService = _mapper.Map(request, hairdresserService);
 
 			hairdresserService.AddDomainEvent(_mapper.Map<HairdresserServiceUpdatedEvent>(hairdresserService));
 
 			_hairdresserServiceRepository.Update(hairdresserService);
+
+			ISendEndpoint _mediaEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMqQueues.StateMachine_HairdresserServiceMedia}"));
+
+			foreach (var media in request.Medias)
+			{
+				switch (media.Operation)
+				{
+					case OperationEnum.Delete:
+
+						var hairdresserServiceMediaDeletedEvent = new HairdresserServiceMediaDeletedEvent
+						{
+							Id = media.Id,
+							ImageOwnerId = request.Id
+						};
+
+						_mediaEndpoint.Send<HairdresserServiceMediaDeletedEvent>(hairdresserServiceMediaDeletedEvent);
+
+						break;
+					case OperationEnum.Update:
+
+						var hairdresserServiceMediaUpdatedEvent = new HairdresserServiceMediaUpdatedEvent
+						{
+							Id = media.Id,
+							ImageOwnerId = request.Id,
+							FileExtension = MediaMethods.ToFileExtension(media.Base64Image),
+							CustomType = MediaTypes.HAIRDRESSER_SERVICE_MULTI,
+							MediaData = MediaMethods.ToByteArray(media.Base64Image),
+						};
+
+						_mediaEndpoint.Send<HairdresserServiceMediaUpdatedEvent>(hairdresserServiceMediaUpdatedEvent);
+						
+						break;
+					case OperationEnum.Create:
+
+						var hairdresserServiceMediaCreatedEvent = new HairdresserServiceMediaCreatedEvent
+						{
+							Id = Guid.NewGuid(),
+							ImageOwnerId = request.Id,
+							FileExtension = MediaMethods.ToFileExtension(media.Base64Image),
+							CustomType = MediaTypes.HAIRDRESSER_SERVICE_MULTI,
+							MediaData = MediaMethods.ToByteArray(media.Base64Image),
+						};
+
+						_mediaEndpoint.Send<HairdresserServiceMediaCreatedEvent>(hairdresserServiceMediaCreatedEvent);
+
+						break;
+					default:
+						break;
+				}
+			}
 
 			return await Commit(_hairdresserServiceRepository.UnitOfWork);
 
