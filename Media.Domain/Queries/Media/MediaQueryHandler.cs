@@ -1,12 +1,15 @@
 ﻿using Media.Domain.Interfaces;
 using Media.Domain.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Media.Domain.Queries.Media
 {
 	public class MediaQueryHandler : IRequestHandler<GetAllMediasQuery, IEnumerable<MediaModel>>,
 									IRequestHandler<GetMediaByImageOwnerIdAndTypeQuery,MediaModel>,
-									IRequestHandler<GetMediaListByImageOwnerIdAndTypeQuery,IEnumerable<MediaModel>>
+									IRequestHandler<GetMediaListByImageOwnerIdAndTypeQuery,IEnumerable<MediaModel>>,
+									IRequestHandler<GetMediaCountByImageOwnerIdAndTypeQuery,int>,
+									IRequestHandler<IsMediaAvailableQuery,bool>
 		{					
 		private readonly IMediaRepository mediaRepository;
 
@@ -34,6 +37,20 @@ namespace Media.Domain.Queries.Media
 			var mediaList=await mediaRepository.GetMany(x=>x.ImageOwnerId==request.ImageOwnerId && x.CustomType==request.CustomType);
 
 			return mediaList;
+		}
+
+		public async Task<int> Handle(GetMediaCountByImageOwnerIdAndTypeQuery request, CancellationToken cancellationToken)
+		{
+			var count = await mediaRepository.GetManyQuery(x => x.ImageOwnerId == request.ImageOwnerId && x.CustomType == request.CustomType).CountAsync();
+
+			return count;
+		}
+
+		public async Task<bool> Handle(IsMediaAvailableQuery request, CancellationToken cancellationToken)
+		{
+			var isAvaliable=await mediaRepository.GetManyQuery(x=>x.Id==request.Id && x.ImageOwnerId==request.OwnerId).AnyAsync();
+
+			return isAvaliable;
 		}
 	}
 }
