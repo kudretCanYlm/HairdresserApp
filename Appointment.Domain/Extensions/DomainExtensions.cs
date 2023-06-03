@@ -45,8 +45,9 @@ namespace Appointment.Domain.Extensions
 			services.AddScoped<IRequestHandler<UpdateAppointmentCommand, ValidationResult>, AppointmentCommandHandler>();
 
 			// Domain - Queries
-			services.AddScoped<IRequestHandler<GetAllAppointmentsByUserId, IEnumerable<AppointmentModel>>, AppointmentQueryHandler>();
-			services.AddScoped<IRequestHandler<GetAppointmentByIdAndUserId, AppointmentModel>, AppointmentQueryHandler>();
+			services.AddScoped<IRequestHandler<GetAllAppointmentsByUserIdQuery, IEnumerable<AppointmentModel>>, AppointmentQueryHandler>();
+			services.AddScoped<IRequestHandler<GetAppointmentByIdAndUserIdQuery, AppointmentModel>, AppointmentQueryHandler>();
+			services.AddScoped<IRequestHandler<GetAppointmentByIdQuery, AppointmentModel>, AppointmentQueryHandler>();
 
 
 		}
