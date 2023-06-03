@@ -7,14 +7,14 @@ namespace Events.Appointment
 	{
 		public AppointmentCreatedEvent()
 		{
-			AppointmentState = AppointmentStateEnum.Waiting;
+			AppointmentState = AppointmentStateEnum.Created;
 		}
 
 		public AppointmentCreatedEvent(Guid id,string notes, DateTime appointmentDate, TimeSpan appointmentStartTime, Guid userId, Guid hairdresserServiceId, Guid hairdresserId)
 		{
 			Id= id;
 			AggregateId = id;
-			AppointmentState = AppointmentStateEnum.Waiting;
+			AppointmentState = AppointmentStateEnum.Created;
 			Notes = notes;
 			AppointmentDate = appointmentDate;
 			AppointmentStartTime = appointmentStartTime;
@@ -28,6 +28,7 @@ namespace Events.Appointment
 		public string Notes { get; set; }
 		public DateTime AppointmentDate { get; set; }
 		public TimeSpan AppointmentStartTime { get; set; }
+		public TimeSpan AppointmentEndTime { get; set; }
 		public Guid UserId { get; set; }
 		public Guid HairdresserServiceId { get; set; }
 		public Guid HairdresserId { get; set; }

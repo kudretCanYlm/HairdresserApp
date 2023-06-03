@@ -11,16 +11,18 @@ namespace Events.Appointment
 			AppointmentState = AppointmentStateEnum.InProcess;
 		}
 
-		public AppointmentInProcessedEvent(Guid id, Guid hairdresserId)
+		public AppointmentInProcessedEvent(Guid id, Guid hairdresserId, Guid userId)
 		{
 			AggregateId = id;
 			AppointmentState = AppointmentStateEnum.InProcess;
 			Id = id;
 			HairdresserId = hairdresserId;
+			UserId = userId;
 		}
 
 		public Guid Id { get; set; }
 		public AppointmentStateEnum AppointmentState { get; private set; }
 		public Guid HairdresserId { get; set; }
+		public Guid UserId { get; set; }
 	}
 }
