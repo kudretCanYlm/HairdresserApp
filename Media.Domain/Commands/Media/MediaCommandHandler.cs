@@ -35,14 +35,14 @@ namespace Media.Domain.Commands.Media
 
 		public async Task<ValidationResult> Handle(DeleteMediaCommand request, CancellationToken cancellationToken)
 		{
-			var media = await mediaRepository.GetById(request.Id);
+			var media = await mediaRepository.Get(x => x.Id == request.Id && x.ImageOwnerId == request.ImageOwnerId);
 
 			if (media is null)
 			{
 				AddError("The media doesn't exists.");
 				return ValidationResult;
 			}
-
+			
 			media.AddDomainEvent(mapper.Map<MediaDeletedEvent>(media));
 
 			mediaRepository.Delete(media);
@@ -52,7 +52,7 @@ namespace Media.Domain.Commands.Media
 
 		public async Task<ValidationResult> Handle(UpdateMediaCommand request, CancellationToken cancellationToken)
 		{
-			var media = await mediaRepository.GetById(request.Id);
+			var media = await mediaRepository.Get(x => x.Id == request.Id && x.ImageOwnerId == request.ImageOwnerId);
 
 			if (media == null)
 			{
