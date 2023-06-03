@@ -3,9 +3,9 @@ using MediatR;
 
 namespace Appointment.Domain.Queries.Appointment
 {
-	public class GetAppointmentByIdAndUserId:IRequest<AppointmentModel>
+	public class GetAppointmentByIdAndUserIdQuery:IRequest<AppointmentModel>
 	{
-		public GetAppointmentByIdAndUserId(Guid id, Guid userId)
+		public GetAppointmentByIdAndUserIdQuery(Guid id, Guid userId)
 		{
 			Id = id;
 			UserId = userId;

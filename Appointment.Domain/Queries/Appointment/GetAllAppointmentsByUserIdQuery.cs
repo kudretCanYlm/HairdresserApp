@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Appointment.Domain.Queries.Appointment
 {
-	public class GetAllAppointmentsByUserId:IRequest<IEnumerable<AppointmentModel>>
+	public class GetAllAppointmentsByUserIdQuery:IRequest<IEnumerable<AppointmentModel>>
 	{
-		public GetAllAppointmentsByUserId(Guid userId)
+		public GetAllAppointmentsByUserIdQuery(Guid userId)
 		{
 			UserId = userId;
 		}
