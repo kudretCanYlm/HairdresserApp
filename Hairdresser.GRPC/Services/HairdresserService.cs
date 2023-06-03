@@ -24,5 +24,33 @@ namespace Hairdresser.GRPC.Services
 
 			return result;
 		}
+
+		public override async Task<CheckHairdresserActiveModel> CheckHairdresserActive(CheckHairdresserActiveRequest request, ServerCallContext context)
+		{
+			var check = await _hairdresserAppService.CheckHairdresserActive(
+				Guid.Parse(request.HairdresserId),
+				DateTime.Parse(request.AppointmentDate),
+				TimeSpan.Parse(request.AppointmentStartTime), 
+				TimeSpan.Parse(request.ServiceDuration));
+
+			var result = new CheckHairdresserActiveModel
+			{
+				IsActive = check
+			};
+
+			return result;
+		}
+
+		public override async Task<GetHairdresserOwnerIdModel> GetHairdresserOwnerId(GetHairdresserOwnerIdRequest request, ServerCallContext context)
+		{
+			var hairdresser = await _hairdresserAppService.GetHairdresserById(Guid.Parse(request.HairdresserId));
+
+			var result = new GetHairdresserOwnerIdModel
+			{
+				OwnerId = hairdresser.OwnerId.ToString()
+			};
+
+			return result;
+		}
 	}
 }
