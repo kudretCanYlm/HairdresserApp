@@ -22,12 +22,12 @@ namespace Media.Api.Integrations.Consumers
 			{
 				await _mediator.Publish(context.Message);
 
-				await context.RespondAsync(new MediaSuccessfulEvent((Guid)context.CorrelationId, context.Message.Id, context.Message.ImageOwnerId));
+				await context.RespondAsync(new MediaCreatedSuccessfulEvent((Guid)context.CorrelationId, context.Message.Id, context.Message.ImageOwnerId));
 
 			}
 			catch (Exception ex)
 			{
-				await context.RespondAsync(new MediaRejectedEvent((Guid)context.CorrelationId, context.Message.Id, context.Message.ImageOwnerId, ex.Message));
+				await context.RespondAsync(new MediaCreatedRejectedEvent((Guid)context.CorrelationId, context.Message.Id, context.Message.ImageOwnerId, ex.Message));
 
 			}
 		}
