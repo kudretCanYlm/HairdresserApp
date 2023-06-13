@@ -9,6 +9,7 @@ namespace Appointment.Application.Mapper
 		public ModelToDto()
 		{
 			CreateMap<AppointmentModel, AppointmentDto>();
+			CreateMap<AppointmentModel, GetAllAppointmentsForUserDto>();
 		}
 	}
 }

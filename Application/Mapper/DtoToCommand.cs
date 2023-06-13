@@ -1,5 +1,6 @@
 ﻿using Appointment.Application.Dto;
 using Appointment.Domain.Commands.Appointment;
+using Appointment.Domain.Queries.Appointment;
 using AutoMapper;
 
 
@@ -20,6 +21,7 @@ namespace Appointment.Application.Mapper
 			CreateMap<CreateAppointmentDto, CreateAppointmentCommand>();
 			CreateMap<UpdateAppointmentDto, UpdateAppointmentCommand>();
 
+			CreateMap<GetAllAppointmentsForUserPostDto, GetAllAppointmentsForUserQuery>();
 
 		}
 	}
