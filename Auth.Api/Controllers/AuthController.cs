@@ -4,7 +4,7 @@ using Auth.Application.Dto.Auth;
 
 namespace Auth.Api.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("[controller]")]
 	[ApiController]
 	public class AuthController : ControllerBase
 	{
