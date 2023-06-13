@@ -3,11 +3,11 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/Appointment/{url}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7200
+          "Host": "appointment.api",
+          "Port": 8081
         }
       ],
       "UpstreamPathTemplate": "/api/Appointment/{url}",
@@ -27,11 +27,11 @@
     //},
     {
       "DownstreamPathTemplate": "/Hairdresser/{url}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7161
+          "Host": "hairdresser.api",
+          "Port": 8083
         }
       ],
       "UpstreamPathTemplate": "/api/Hairdresser/{url}",
@@ -39,11 +39,11 @@
     },
     {
       "DownstreamPathTemplate": "/HairdresserService/{url}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7060
+          "Host": "hairdresserservice.api",
+          "Port": 8085
         }
       ],
       "UpstreamPathTemplate": "/api/HairdresserService/{url}",
@@ -81,11 +81,11 @@
     //},
     {
       "DownstreamPathTemplate": "/User/{url}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7230
+          "Host": "user.api",
+          "Port": 8090
         }
       ],
       "UpstreamPathTemplate": "/api/User/{url}",
