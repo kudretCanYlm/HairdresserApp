@@ -58,7 +58,21 @@ namespace User.Api.Controllers
 
 			return Ok(result);
 		}
+
 		
+		[HttpGet,Route("GetMe")]
+		public async Task<IActionResult> GetMe()
+		{
+			var userId = (Guid)GrpcAuthExtension.GetCurrentUserId(HttpContext);
+
+			var result = await _userAppService.GetByIdAsync(userId);
+
+			if (result == null)
+				return BadRequest("User Not Found");
+			
+			return Ok(result);
+		}
+
 		[HttpPost,Route("AddUserAddress")]
 		public async Task<IActionResult> AddUserAddress([FromBody] CreateAddressDto createAddressDto)
 		{
