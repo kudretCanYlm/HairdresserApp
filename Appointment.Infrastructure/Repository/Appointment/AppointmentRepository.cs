@@ -1,8 +1,10 @@
 ﻿using Appointment.Domain.Interfaces;
 using Appointment.Domain.Models;
+using Appointment.Domain.Specifications;
 using Appointment.Infrastructure.Context;
 using Database.Infrastructure;
 using Database.Repository;
+using Database.Specifications;
 using Events.Appointment.Enum;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,37 +20,19 @@ namespace Appointment.Infrastructure.Repository.Appointment
 		public async Task<bool> CheckIsthereAnAppointment(Guid id, DateTime appointmentDate, TimeSpan appointmentStartTime, TimeSpan serviceDuration)
 		{
 
-			var query = GetManyQuery(x =>
+			var appointmentHairdresserSpecification = new AppointmentHairdresserSpecification(id);
+			var appointmentStateCanceledOrDeniedSpecification = new AppointmentStateCanceledOrDeniedSpecification();
+			var AppointmentTimeConflictSpecification = new AppointmentTimeConflictSpecification(appointmentDate,appointmentStartTime,serviceDuration);
 
-				(
-				//test later
-				x.AppointmentState!=AppointmentStateEnum.Denied
-				||
-				x.AppointmentState!=AppointmentStateEnum.Cancelled
-				)
-				&&
-				x.AppointmentDate.Date == appointmentDate.Date
-				&&
-				(
-				       (
-				       appointmentStartTime >= x.AppointmentStartTime
-				       &&
-				       appointmentStartTime <= x.AppointmentEndTime
-				       )
-			        ||
-			           (
-				       appointmentStartTime.Add(serviceDuration) >= x.AppointmentStartTime 
-				       &&
-				       appointmentStartTime.Add(serviceDuration) <= x.AppointmentEndTime
-			           )
-			));
+			var combineSpecification = 
+				appointmentHairdresserSpecification
+				.And(appointmentStateCanceledOrDeniedSpecification)
+				.And(AppointmentTimeConflictSpecification).Criteria;
 
-			return await query.CountAsync() == 0 ? false : true;
-		}
 
-		private bool IsBetweenTimeSpans(double targetTimeSpan, double startTimeSpan, double endTimeSpan)
-		{
-			return targetTimeSpan >= startTimeSpan && targetTimeSpan <= endTimeSpan;
+			var count=await GetManyQuery(combineSpecification).CountAsync();
+			
+			return count == 0 ? false : true;
 		}
 
 		public async Task<IEnumerable<AppointmentModel>> GetAllAppointmentsByUserId(Guid userId)
