@@ -17,7 +17,14 @@ namespace Auth.GRPC.Services
 		{
 			var userAuthSession = await _authAppService.CheckTokenAndAddExpiring(request.UserToken);
 			if (userAuthSession == null)
-				return null;
+			{
+				var user = new UserModel()
+				{
+					UserId = Guid.Empty.ToString()
+				};
+
+				return user;
+			}
 
 			var userModel = new UserModel() { UserId = userAuthSession.TokenOwnerId.ToString() };
 
