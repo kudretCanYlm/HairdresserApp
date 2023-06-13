@@ -8,6 +8,8 @@ using User.Domain.Commands.User;
 using User.Application.Dto.User;
 using User.Domain.Queries.User;
 using MediatR;
+using Grpc.Media.ClientServices;
+using Common.Media;
 
 namespace User.Application.Services
 {
@@ -17,13 +19,15 @@ namespace User.Application.Services
 		private readonly IEventStoreRepository _eventStoreRepository;
 		private readonly IMediatorHandler _mediatorHandler;
 		private readonly IMediator _mediator;
+		private readonly MediaGrpcService _mediaGrpcService;
 
-		public UserAppService(IMapper mapper, IEventStoreRepository eventStoreRepository, IMediatorHandler mediatorHandler, IMediator mediator)
+		public UserAppService(IMapper mapper, IEventStoreRepository eventStoreRepository, IMediatorHandler mediatorHandler, IMediator mediator, MediaGrpcService mediaGrpcService)
 		{
 			_mapper = mapper;
 			_eventStoreRepository = eventStoreRepository;
 			_mediatorHandler = mediatorHandler;
 			_mediator = mediator;
+			_mediaGrpcService = mediaGrpcService;
 		}
 
 		public async Task<Guid?> Login(LoginDto loginDto)
@@ -54,7 +58,18 @@ namespace User.Application.Services
 		public async Task<UserDto> GetByIdAsync(Guid id)
 		{
 			var user = await _mediator.Send(new GetUserByIdQuery(id));
-			return _mapper.Map<UserDto>(user);
+
+			var userdto = _mapper.Map<UserDto>(user);
+
+			if(userdto != null)
+			{
+				var media = await _mediaGrpcService.GetMediaByOwnerIdAndTypeAsync(user.Id, MediaTypes.USER_PROFILE_IMAGE);
+
+				userdto.MediaId = Guid.Parse(media.Id);
+				userdto.Base64Media = media.Base64Media;
+			}
+
+			return userdto;
 		}
 
 		public async Task<ValidationResult> RemoveAsync(Guid id)
