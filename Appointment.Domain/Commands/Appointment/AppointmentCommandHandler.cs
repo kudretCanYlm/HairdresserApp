@@ -1,9 +1,9 @@
-﻿using Appointment.Domain.Interfaces;
+﻿using Appointment.Core.Constraints;
+using Appointment.Domain.Interfaces;
 using Appointment.Domain.Models;
 using AutoMapper;
 using Events.Appointment;
 using Events.MassTransitOptions;
-using FluentValidation.Results;
 using Grpc.Hairdresser.ClientServices;
 using Grpc.HairdresserService.ClientServices;
 using MassTransit;
@@ -68,10 +68,7 @@ namespace Appointment.Domain.Commands.Appointment
 
 		public async Task<FluentValidation.Results.ValidationResult> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
 		{
-			var inThisWeekAndGreaterThanNow =
-				DateOnly.FromDateTime(request.AppointmentDate) >= DateOnly.FromDateTime(DateTime.Now)
-				&&
-				DateOnly.FromDateTime(request.AppointmentDate) <= DateOnly.FromDateTime(DateTime.Now).AddDays(7);
+			var inThisWeekAndGreaterThanNow = DateConstrains.InThisWeekAndGreaterThanNowConstrain(request.AppointmentDate);
 
 			if (!inThisWeekAndGreaterThanNow)
 			{
@@ -114,7 +111,7 @@ namespace Appointment.Domain.Commands.Appointment
 
 			ISendEndpoint _applicationEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMqQueues.Appointment_AppointmentCreatedEventQueue}"));
 
-			_applicationEndpoint.Send(appointmentCreatedEvent);
+			await _applicationEndpoint.Send<AppointmentCreatedEvent>(appointmentCreatedEvent);
 
 			return await Commit(_appointmentRepository.UnitOfWork);
 
@@ -143,7 +140,7 @@ namespace Appointment.Domain.Commands.Appointment
 			{
 				case nameof(ApproveAppointmentCommand):
 					ISendEndpoint _applicationEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMqQueues.Appointment_AppointmentApprovedEventQueue}"));
-					_applicationEndpoint.Send(appointmentEvent);
+					await _applicationEndpoint.Send<AppointmentApprovedEvent>(appointmentEvent);
 
 					break;
 
