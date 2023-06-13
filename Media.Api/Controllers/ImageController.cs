@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Media.Api.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("[controller]")]
 	[ApiController]
 	public class ImageController : ControllerBase
 	{
@@ -21,7 +21,7 @@ namespace Media.Api.Controllers
 			this.mediator = mediator;
 		}
 
-		[HttpPost,Route("addMedia")]
+		[HttpPost,Route("addMedia"),AllowAnonymous]
 		public async Task<IActionResult> AddMedia([FromBody] CreateMediaDto mediaDto)
 		{
 			var result = await mediaAppService.CreateAsync(mediaDto);
