@@ -8,8 +8,11 @@ using User.Infrastructure.Extensions;
 using Grpc.Media;
 using Events.MassTransitOptions;
 using User.Domain.Sagas.CreateUserMedia;
-using Elastic.Apm.Api;
 using Common.Cors;
+using Database.Extensions;
+using User.Infrastructure.Context;
+using Prometheus;
+using Common.Consul;
 
 internal class Program
 {
@@ -35,12 +38,11 @@ internal class Program
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddMySwagger(builder.Configuration);
 
-		//add all
-		builder.Services.AddMyCors();
+		builder.Services.AddConsul(builder.Configuration);
 
-		//test
 		var app = builder.Build();
 
+		app.ApplyMigration<UserContext>();
 		//var loggerFactory = LoggerFactory.Create(builder =>
 		//{
 		//	builder.AddSimpleConsole(i => i.ColorBehavior = LoggerColorBehavior.Disabled);
@@ -55,6 +57,10 @@ internal class Program
 		}
 
 		//add all
+		app.UseRouting();
+		app.UseHttpMetrics();
+		app.MapMetrics();
+
 		app.UseMyCors();
 
 		app.UseAuthMiddleware();

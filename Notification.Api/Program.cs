@@ -1,3 +1,4 @@
+using Common.Consul;
 using Common.Cors;
 using Database.Repository.Redis;
 using Events.Appointment;
@@ -5,11 +6,14 @@ using Events.MassTransitOptions;
 using Grpc.Auth;
 using Grpc.Hairdresser;
 using Grpc.HairdresserService;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.HttpOverrides;
 using Notification.Api.Hubs;
 using Notification.Api.Integrations.Consumers;
 using Notification.Api.Interfaces;
 using Notification.Api.RedisIndex;
 using Notification.Api.Repository;
+using Prometheus;
 using Redis.OM;
 using System.Reflection;
 
@@ -37,16 +41,19 @@ builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(name: "AllowReact",
-					  builder =>
+					  build =>
 					  {
-						  builder.WithOrigins("http://localhost:3000")
+						  build.WithOrigins(builder.Configuration["SignalRClient"])
 						  .AllowAnyHeader()
 						  .AllowAnyMethod()
 						  .AllowCredentials();
 					  });
 });
+builder.Services.AddConsul(builder.Configuration);
 
 var app = builder.Build();
+
+
 
 app.UseHttpsRedirection();
 
@@ -55,6 +62,8 @@ app.MapControllers();
 app.UseCors("AllowReact");
 
 app.UseRouting();
+app.UseHttpMetrics();
+app.MapMetrics();
 
 app.UseEndpoints(endpoints =>
 {

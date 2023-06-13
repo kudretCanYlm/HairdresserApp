@@ -1,11 +1,15 @@
+using Common.Consul;
+using Database.Extensions;
 using Events.MassTransitOptions;
 using Events.Stores.MongoDb;
 using Media.Api.Integrations.Consumers;
 using Media.Application.Extensions;
 using Media.Domain.Extensions;
+using Media.Infrastructure.Context;
 using Media.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Prometheus;
 using Swagger;
 using System.Reflection;
 
@@ -25,9 +29,15 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMySwagger(builder.Configuration);
+builder.Services.AddConsul(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseRouting();
+app.UseHttpMetrics();
+app.MapMetrics();
+
+app.ApplyMigration<MediaContext>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
