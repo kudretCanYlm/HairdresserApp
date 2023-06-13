@@ -34,13 +34,13 @@ namespace Notification.Api.Hubs
 
 		}
 
-		public Task<string> GetConnectionId(Guid userId)
+		public IEnumerable<string>? GetConnectionIds(Guid userId)
 		{
 			lock (OnlineUsers)
 			{
-				var connectionId = OnlineUsers.FirstOrDefault(x => x.UserId == userId)?.ConnectionId ?? "";
-				
-				return Task.FromResult(connectionId);
+				var connectionIds = OnlineUsers.Where(x => x.UserId == userId)?.Select(x=>x.ConnectionId).ToList();
+
+				return connectionIds;
 
 			}
 
