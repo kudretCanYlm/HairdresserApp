@@ -31,7 +31,7 @@ namespace Notification.Api.Hubs
 
 			await _userTracker.UserConnected(new UserConnectionInfoDto(userId), Context.ConnectionId);
 			var sdfsd = _userTracker.OnlineUsers;
-			var connId = await _userTracker.GetConnectionId(Guid.Parse(user.UserId));
+			var connIds = _userTracker.GetConnectionIds(Guid.Parse(user.UserId));
 
 
 			var userIdString = userId.ToString("N");
@@ -39,7 +39,7 @@ namespace Notification.Api.Hubs
 
 			foreach (var message in messages)
 			{
-				await Clients.Client(connId).SendAsync("AppointmentNotification", message);
+				await Clients.Clients(connIds).SendAsync("AppointmentNotification", message);
 				await _notificationRepository.DeleteAppointmentNotifications(message);
 			}
 
