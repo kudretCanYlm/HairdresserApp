@@ -6,6 +6,7 @@ using Appointment.Domain.Queries.Appointment;
 using AutoMapper;
 using Events.Stores;
 using FluentValidation.Results;
+using Grpc.Hairdresser.ClientServices;
 using MediatR;
 using NetDevPack.Mediator;
 
@@ -17,14 +18,17 @@ namespace Appointment.Application.Services
 		private readonly IEventStoreRepository _eventStoreRepository;
 		private readonly IMediatorHandler _mediatorHandler;
 		private readonly IMediator _mediator;
+		private readonly HairdresserGrpcService _hairdresserGrpcService;
 
-		public AppointmentAppService(IMapper mapper, IEventStoreRepository eventStoreRepository, IMediatorHandler mediatorHandler, IMediator mediator)
+		public AppointmentAppService(IMapper mapper, IEventStoreRepository eventStoreRepository, IMediatorHandler mediatorHandler, IMediator mediator, HairdresserGrpcService hairdresserGrpcService)
 		{
 			_mapper = mapper;
 			_eventStoreRepository = eventStoreRepository;
 			_mediatorHandler = mediatorHandler;
 			_mediator = mediator;
+			_hairdresserGrpcService = hairdresserGrpcService;
 		}
+
 		public async Task<IEnumerable<AppointmentDto>> GetAllAppointmentsByUserId(Guid userId)
 		{
 			var result=await _mediator.Send(new GetAllAppointmentsByUserIdQuery(userId));
@@ -103,5 +107,13 @@ namespace Appointment.Application.Services
 		{
 			GC.SuppressFinalize(this);
 		}
+
+		public async Task<IEnumerable<GetAllAppointmentsForUserDto>> GetAllAppointmentsForUser(GetAllAppointmentsForUserPostDto getAllAppointmentsForUserPostDto)
+		{
+			var appointments=await _mediator.Send(_mapper.Map<GetAllAppointmentsForUserQuery>(getAllAppointmentsForUserPostDto));
+
+			return _mapper.Map<IEnumerable<GetAllAppointmentsForUserDto>>(appointments);
+
+	}
 	}
 }
