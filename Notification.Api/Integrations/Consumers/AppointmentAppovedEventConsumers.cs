@@ -41,9 +41,9 @@ namespace Notification.Api.Integrations.Consumers
 
 				if (isUserOnline)
 				{
-					var connId = await _userTracker.GetConnectionId(Guid.Parse(appointmentNotification.SendTo));
+					var connIds = _userTracker.GetConnectionIds(Guid.Parse(appointmentNotification.SendTo));
 
-					await _connectionHub.Clients.Client(connId).SendAsync("AppointmentNotification", appointmentNotification);
+					await _connectionHub.Clients.Clients(connIds).SendAsync("AppointmentNotification", appointmentNotification);
 				}
 				else
 					await _notificationRepository.AddAppointmentNotification(appointmentNotification);
