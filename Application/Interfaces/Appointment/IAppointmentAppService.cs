@@ -9,6 +9,7 @@ namespace Appointment.Application.Interfaces.Appointment
 		Task<AppointmentDto> GetAppointmentById(Guid id);
 		Task<IEnumerable<AppointmentDto>> GetAllAppointmentsByUserId(Guid userId);
 		Task<AppointmentDto> GetAppointmentByIdAndUserId(Guid id,Guid userId);
+		Task<IEnumerable<GetAllAppointmentsForUserDto>> GetAllAppointmentsForUser(GetAllAppointmentsForUserPostDto getAllAppointmentsForUserPostDto);
 		Task<ValidationResult> ApproveAppointment(AppointmentStateHairdresserDto appointmentStateHairdresserDto);
 		Task<ValidationResult> CancelAppointment(AppointmentStateUserDto appointmentStateUserDto);
 		Task<ValidationResult> CompleteAppointment(AppointmentStateHairdresserDto appointmentStateHairdresserDto);
