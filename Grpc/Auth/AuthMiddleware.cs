@@ -24,7 +24,8 @@ namespace Grpc.Auth
 		{
 
 			var endpoint = httpContext.GetEndpoint();
-			if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() is object)
+
+			if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() is object || endpoint?.DisplayName== "Prometheus metrics")
 			{
 				await _next(httpContext);
 				return;
@@ -39,7 +40,7 @@ namespace Grpc.Auth
 
 				var user = await _authGrpcService.CheckTokenRefreshAndUserId(token);
 
-				if (user != null)
+				if (user != null && user.UserId!=Guid.Empty.ToString())
 				{
 					var claims = new[]
 					{
