@@ -61,5 +61,15 @@ namespace Appointment.Api.Controllers
 				return BadRequest(result);
 
 		}
+
+		
+		[HttpPost,Route("GetAllAppointmentsForUser")]
+		public async Task<IActionResult> GetAllAppointmentsForUser([FromBody] GetAllAppointmentsForUserPostDto getAllAppointmentsForUserPostDto)
+		{
+			
+			var appointments=await _appointmentAppService.GetAllAppointmentsForUser(getAllAppointmentsForUserPostDto);
+
+			return Ok(appointments);
+		}
 	}
 }
