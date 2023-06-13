@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Appointment.Core\Appointment.Core.csproj" />
     <ProjectReference Include="..\Database\Database.csproj" />
     <ProjectReference Include="..\Events\Events.csproj" />
     <ProjectReference Include="..\Filters\Filters.csproj" />

@@ -4,12 +4,17 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>13ed7ac3-7838-4f56-a125-45e690b7b06f</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MassTransit" Version="8.0.16" />
-		<PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
+		<!--<PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />-->
+		<PackageReference Include="prometheus-net.AspNetCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
 		<PackageReference Include="Redis.OM" Version="0.4.2" />
 	</ItemGroup>
 
