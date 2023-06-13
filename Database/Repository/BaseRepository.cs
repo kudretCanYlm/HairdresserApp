@@ -1,6 +1,5 @@
 ﻿using Database.Entity;
 using Database.Infrastructure;
-using Database.Specifications;
 using Microsoft.EntityFrameworkCore;
 using NetDevPack.Data;
 using NetDevPack.Domain;
@@ -19,20 +18,10 @@ namespace Database.Repository
 			DatabaseFactory = databaseFactory;
 			dbSet = DbContextV.Set<T>();
 		}
+		//check
+		public IQueryable<T> Table => dbSet.Where(x => x.isDeleted == false).AsQueryable();
 
-		public IQueryable<T> Table => dbSet;
-
-		public IQueryable<T> TableNoTracking => dbSet.AsNoTracking();
-
-		public IEnumerable<T> GetSpec(ISpecification<T> spec)
-		{
-			return ApplySpecification(spec).ToList();
-		}
-
-		private IQueryable<T> ApplySpecification(ISpecification<T> spec)
-		{
-			return SpecificationEvaluator<T>.GetQuery(Table, spec);
-		}
+		public IQueryable<T> TableNoTracking => dbSet.Where(x => x.isDeleted == false).AsNoTracking();
 
 		protected IDatabaseFactory<DbContext> DatabaseFactory
 		{
@@ -110,12 +99,6 @@ namespace Database.Repository
 		{
 			return dbSet.Where(x => x.isDeleted == false).Where(where);
 		}
-
-		//public virtual IQueryable<T> GetPage<TOrder>(Page page, Expression<Func<T, bool>> where, Expression<Func<T, TOrder>> order)
-		//{
-		//	var result = dbset.OrderBy(order).Where(where).GetPage(page);
-		//	return result;
-		//}
 
 		public async Task<T> Get(Expression<Func<T, bool>> where)
 		{
