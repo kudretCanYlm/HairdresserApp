@@ -1,0 +1,448 @@
+version: '3.4'
+
+services:
+
+  amssql:
+    container_name: amssql
+    restart: always
+    ports:
+        - "1433:1433"
+    environment:
+      SA_PASSWORD: "SwN12345678"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+    volumes:
+      - mssql-data:/var/opt/mssql
+
+  amongo:
+    container_name: amongo
+    restart: always
+    ports:
+     - "27017:27017"
+    volumes:
+     - amongo_data:/data/db
+  
+  aredis:
+    container_name: aredis
+    restart: always    
+    ports:
+        - "6379:6379" 
+    volumes:
+        - redis_data:/data
+        
+  arabbitmq:
+    container_name: arabbitmq
+    restart: always
+    environment:
+        - RABBITMQ_DEFAULT_USER = guest
+        - RABBITMQ_DEFAULT_PASS = guest
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+    volumes:
+        - rabbitmq_data:/var/lib/rabbitmq/
+
+  prometheus:
+    container_name: prometheus
+    ports:
+      - "30090:9090"
+    environment:
+      - TZ=UTC
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - appointment.api
+      - auth.grpc
+      - hairdresser.api
+      - hairdresser.grpc
+      - hairdresserservice.api
+      - hairdresserservice.grpc
+      - media.grpc
+      - media.api
+      - notification.api
+      - user.api
+      - user.grpc
+
+  grafana:
+    container_name: grafana
+    ports:
+      - "30091:3000"
+    volumes:
+      - ./grafana-data/data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+  consul_server:
+    container_name: consul_server
+    restart: always
+    volumes:
+     - ./server1.json:/consul/config/server1.json:ro
+     - ./certs/:/consul/config/certs/:ro
+    ports:
+      - "8500:8500"
+      - "8600:8600/tcp"
+      - "8600:8600/udp"
+    #command: "agent -bootstrap-expect=3"
+
+  apigateway:
+    container_name: apigateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - "ServiceConfiguration__Url=http://apigateway:8080"
+      - "ServiceConfiguration__ServiceName=Api-Gateway"
+      - "ServiceConfiguration__ServiceId=Api-Gateway-1"
+      - "Consul__Url=http://consul_server:8500"
+
+    ports:
+      - "8080:8080"
+    depends_on:
+      - appointment.api
+      - hairdresser.api
+      - hairdresserservice.api
+      - user.api
+      - consul_server
+
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  appointment.api:
+    container_name: appointment.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8081
+      - "AuthUrl=http://auth.grpc:8082"
+      - "HairdresserServiceUrl=http://hairdresserservice.grpc:8086"
+      - "HairdresserUrl=http://hairdresser.grpc:8084"
+      - "RabbitMqOptions__RabbitMqUri=amqp://guest:guest@arabbitmq:5672/"
+      - "MongoDbEventStoreOptions__CollectionName=AppointmentEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "ConnectionStrings__AppointmentServiceDb=Server=amssql,1433;Initial Catalog=HairdresserApp;User ID=SA; Password=SwN12345678;TrustServerCertificate=true"
+      - "ServiceConfiguration__Url=http://appointment.api:8081"
+      - "ServiceConfiguration__ServiceName=Appointment"
+      - "ServiceConfiguration__ServiceId=Appointment-1"
+      - "Consul__Url=http://consul_server:8500"
+
+    ports:
+      - "8081:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - auth.grpc
+      - hairdresserservice.grpc
+      - hairdresser.grpc
+      - arabbitmq
+      - amongo
+      - amssql
+      - consul_server
+
+  auth.grpc:
+    container_name: auth.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8082
+      - "MongoDbEventStoreOptions__CollectionName=AuthEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "REDIS_CONNECTION_STRING=redis://aredis:6379"
+      - "ServiceConfiguration__Url=http://auth.grpc:8082"
+      - "ServiceConfiguration__ServiceName=Auth"
+      - "ServiceConfiguration__ServiceId=Auth-Rpc-1"
+      - "Consul__Url=http://consul_server:8500"
+
+    ports:
+      - "8082:8082"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - amongo
+      - aredis
+      - consul_server
+
+  hairdresser.api:
+    container_name: hairdresser.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8083
+      - "AuthUrl=http://auth.grpc:8082"
+      - "UserUrl=http://user.grpc:8091"
+      - "MediaUrl=http://media.grpc:8092"
+      - "RabbitMqOptions__RabbitMqUri=amqp://guest:guest@arabbitmq:5672/"
+      - "MongoDbEventStoreOptions__CollectionName=HairdresserEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "SagaStateDb__CollectionName=HairdresserMediaSagaState"
+      - "SagaStateDb__Connection=mongodb://amongo:27017"
+      - "SagaStateDb__DatabaseName=HairdresserAppEventStore"
+      - "ConnectionStrings__HairdresserDb=Server=amssql,1433;Initial Catalog=HairdresserApp;User ID=SA; Password=SwN12345678;TrustServerCertificate=true"
+      - "ServiceConfiguration__Url=http://hairdresser.api:8083"
+      - "ServiceConfiguration__ServiceName=Hairdresser"
+      - "ServiceConfiguration__ServiceId=Hairdresser-1"
+      - "Consul__Url=http://consul_server:8500"
+
+    ports:
+      - "8083:8083"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - auth.grpc
+      - user.grpc
+      - media.grpc
+      - arabbitmq
+      - amongo
+      - amssql
+      - consul_server
+
+  hairdresser.grpc:
+    container_name: hairdresser.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8084
+      - "AuthUrl=http://auth.grpc:8082"
+      - "UserUrl=http://user.grpc:8091"
+      - "MediaUrl=http://media.grpc:8092"
+      - "RabbitMqOptions__RabbitMqUri=amqp://guest:guest@arabbitmq:5672/"
+      - "MongoDbEventStoreOptions__CollectionName=HairdresserEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "SagaStateDb__CollectionName=HairdresserMediaSagaState"
+      - "SagaStateDb__Connection=mongodb://amongo:27017"
+      - "SagaStateDb__DatabaseName=HairdresserAppEventStore"
+      - "ConnectionStrings__HairdresserDb=Server=amssql,1433;Initial Catalog=HairdresserApp;User ID=SA; Password=SwN12345678;TrustServerCertificate=true"
+      - "ServiceConfiguration__Url=http://hairdresser.grpc:8084"
+      - "ServiceConfiguration__ServiceName=Hairdresser-Rpc"
+      - "ServiceConfiguration__ServiceId=Hairdresser-Rpc-1"
+      - "Consul__Url=http://consul_server:8500"
+
+    ports:
+      - "8084:8084"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - auth.grpc
+      - user.grpc
+      - media.grpc
+      - arabbitmq
+      - amongo
+      - amssql
+      - consul_server
+
+  hairdresserservice.api:
+    container_name: hairdresserservice.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8085
+      - "AuthUrl=http://auth.grpc:8082"
+      - "HairdresserUrl=http://hairdresser.grpc:8084"
+      - "MediaUrl=http://media.grpc:8092"
+      - "RabbitMqOptions__RabbitMqUri=amqp://guest:guest@arabbitmq:5672/"
+      - "MongoDbEventStoreOptions__CollectionName=HairdresserServiceEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "SagaStateDb__CollectionName=HairdresserServiceSagaState"
+      - "SagaStateDb__Connection=mongodb://amongo:27017"
+      - "SagaStateDb__DatabaseName=HairdresserAppEventStore"
+      - "ConnectionStrings__HairdresserServiceServiceDb=Server=amssql,1433;Initial Catalog=HairdresserApp;User ID=SA; Password=SwN12345678;TrustServerCertificate=true"
+      - "ServiceConfiguration__Url=http://hairdresserservice.api:8085"
+      - "ServiceConfiguration__ServiceName=Hairdresser-Service"
+      - "ServiceConfiguration__ServiceId=Hairdresser-Service-1"
+      - "Consul__Url=http://consul_server:8500"
+
+    ports:
+      - "8085:8085"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - auth.grpc
+      - hairdresser.grpc
+      - media.grpc
+      - arabbitmq
+      - amongo
+      - amssql
+      - consul_server
+
+  hairdresserservice.grpc:
+    container_name: hairdresserservice.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8086
+      - "AuthUrl=http://auth.grpc:8082"
+      - "HairdresserUrl=http://hairdresser.grpc:8084"
+      - "MediaUrl=http://media.grpc:8092"
+      - "RabbitMqOptions__RabbitMqUri=amqp://guest:guest@arabbitmq:5672/"
+      - "MongoDbEventStoreOptions__CollectionName=HairdresserServiceEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "SagaStateDb__CollectionName=HairdresserServiceSagaState"
+      - "SagaStateDb__Connection=mongodb://amongo:27017"
+      - "SagaStateDb__DatabaseName=HairdresserAppEventStore"
+      - "ConnectionStrings__HairdresserServiceServiceDb=Server=amssql,1433;Initial Catalog=HairdresserApp;User ID=SA; Password=SwN12345678;TrustServerCertificate=true"
+      - "ServiceConfiguration__Url=http://hairdresserservice.grpc:8086"
+      - "ServiceConfiguration__ServiceName=Hairdresser-Service-Rpc"
+      - "ServiceConfiguration__ServiceId=Hairdresser-Service-Rpc-1"
+      - "Consul__Url=http://consul_server:8500"
+    ports:
+      - "8086:8086"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - auth.grpc
+      - hairdresser.grpc
+      - media.grpc
+      - arabbitmq
+      - amongo
+      - amssql
+      - consul_server
+
+  media.grpc:
+    container_name: media.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8092
+      - "ConnectionStrings__MediaServiceDb=Server=amssql,1433;Initial Catalog=HairdresserApp;User ID=SA; Password=SwN12345678;TrustServerCertificate=true"
+      - "MongoDbEventStoreOptions__CollectionName=MediaEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "ServiceConfiguration__Url=http://media.grpc:8092"
+      - "ServiceConfiguration__ServiceName=Media-Rpc"
+      - "ServiceConfiguration__ServiceId=Media-Rpc-1"
+      - "Consul__Url=http://consul_server:8500"
+    ports:
+      - "8092:8092"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - amongo
+      - amssql
+      - consul_server
+  
+  media.api:
+    container_name: media.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8088
+      - "MediaUrl=http://media.grpc:8092"
+      - "ConnectionStrings__MediaServiceDb=Server=amssql,1433;Initial Catalog=HairdresserApp;User ID=SA; Password=SwN12345678;TrustServerCertificate=true"
+      - "MongoDbEventStoreOptions__CollectionName=MediaEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "RabbitMqOptions__RabbitMqUri=amqp://guest:guest@arabbitmq:5672/"
+      - "ServiceConfiguration__Url=http://media.api:8088"
+      - "ServiceConfiguration__ServiceName=Media"
+      - "ServiceConfiguration__ServiceId=Media-1"
+      - "Consul__Url=http://consul_server:8500"
+
+    ports:
+      - "8088:8088"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - amongo
+      - amssql
+      - arabbitmq
+      - consul_server
+
+  notification.api:
+    container_name: notification.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8089
+      - "AuthUrl=http://auth.grpc:8082"
+      - "HairdresserUrl=http://hairdresser.grpc:8084"
+      - "HairdresserServiceUrl=http://hairdresserservice.grpc:8086"
+      - "SignalRClient=http://192.168.1.36:3000"
+      - "REDIS_CONNECTION_STRING=redis://aredis:6379"
+      - "RabbitMqOptions__RabbitMqUri=amqp://guest:guest@arabbitmq:5672/"
+      - "ServiceConfiguration__Url=http://notification.api:8089"
+      - "ServiceConfiguration__ServiceName=Notification"
+      - "ServiceConfiguration__ServiceId=Notification-1"
+      - "Consul__Url=http://consul_server:8500"
+    ports:
+      - "8089:8089"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"   
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - arabbitmq
+      - auth.grpc
+      - hairdresser.grpc
+      - hairdresserservice.grpc
+      - aredis
+      - consul_server
+
+  user.api:
+    container_name: user.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8090
+      - "RabbitMqOptions__RabbitMqUri=amqp://guest:guest@arabbitmq:5672/"
+      - "ConnectionStrings__UserServiceDb=Server=amssql,1433;Initial Catalog=HairdresserApp;User ID=SA; Password=SwN12345678;TrustServerCertificate=true"
+      - "AuthUrl=http://auth.grpc:8082"
+      - "MediaUrl=http://media.grpc:8092"
+      - "MongoDbEventStoreOptions__CollectionName=UserEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "SagaStateDb__CollectionName=UserMediaSagaState"
+      - "SagaStateDb__Connection=mongodb://amongo:27017"
+      - "SagaStateDb__DatabaseName=HairdresserAppEventStore" 
+      - "ServiceConfiguration__Url=http://user.api:8090"
+      - "ServiceConfiguration__ServiceName=User"
+      - "ServiceConfiguration__ServiceId=User-1"
+      - "Consul__Url=http://consul_server:8500"
+    ports:
+      - "8090:8090"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - arabbitmq
+      - amssql
+      - auth.grpc
+      - media.grpc
+      - amongo
+      - consul_server
+
+
+  user.grpc:
+    container_name: user.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8091
+      - "RabbitMqOptions__RabbitMqUri=amqp://guest:guest@arabbitmq:5672/"
+      - "ConnectionStrings__UserServiceDb=Server=amssql,1433;Initial Catalog=HairdresserApp;User ID=SA; Password=SwN12345678;TrustServerCertificate=true"
+      - "AuthUrl=http://auth.grpc:8082"
+      - "MediaUrl=http://media.grpc:8092"
+      - "MongoDbEventStoreOptions__CollectionName=UserEvents"
+      - "MongoDbEventStoreOptions__DatabaseName=HairdresserAppEventStore"
+      - "MongoDbEventStoreOptions__ConnectionString=mongodb://amongo:27017"
+      - "SagaStateDb__CollectionName=UserMediaSagaState"
+      - "SagaStateDb__Connection=mongodb://amongo:27017"
+      - "SagaStateDb__DatabaseName=HairdresserAppEventStore"
+      - "ServiceConfiguration__Url=http://user.grpc:8091"
+      - "ServiceConfiguration__ServiceName=User-Rpc"
+      - "ServiceConfiguration__ServiceId=User-Rpc-1"
+      - "Consul__Url=http://consul_server:8500"
+    ports:
+      - "8091:8091"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - arabbitmq
+      - amssql
+      - auth.grpc
+      - media.grpc
+      - amongo
+      - consul_server

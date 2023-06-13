@@ -1,0 +1,112 @@
+version: '3.4'
+
+services:
+    
+  amssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+
+  aredis:
+    image: redis/redis-stack:latest
+  
+  arabbitmq:
+    image: rabbitmq:3-management
+ 
+  amongo:
+    image: mongo
+  
+  prometheus:
+    image: ubuntu/prometheus
+  
+  grafana:
+    image: grafana/grafana
+  
+  consul_server:
+    image: consul
+
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+
+  appointment.api:
+    image: ${DOCKER_REGISTRY-}appointmentapi
+    build:
+      context: .
+      dockerfile: Appointment.Api/Dockerfile
+
+
+  auth.grpc:
+    image: ${DOCKER_REGISTRY-}authgrpc
+    build:
+      context: .
+      dockerfile: Auth.GRPC/Dockerfile
+
+
+  hairdresser.api:
+    image: ${DOCKER_REGISTRY-}hairdresserapi
+    build:
+      context: .
+      dockerfile: Hairdresser.Api/Dockerfile
+
+
+  hairdresser.grpc:
+    image: ${DOCKER_REGISTRY-}hairdressergrpc
+    build:
+      context: .
+      dockerfile: Hairdresser.GRPC/Dockerfile
+
+
+  hairdresserservice.api:
+    image: ${DOCKER_REGISTRY-}hairdresserserviceapi
+    build:
+      context: .
+      dockerfile: HairdresserService.Api/Dockerfile
+
+
+  hairdresserservice.grpc:
+    image: ${DOCKER_REGISTRY-}hairdresserservicegrpc
+    build:
+      context: .
+      dockerfile: HairdresserService.GRPC/Dockerfile
+
+
+  media.grpc:
+    image: ${DOCKER_REGISTRY-}mediagrpc
+    build:
+      context: .
+      dockerfile: Media.GRPC/Dockerfile
+
+  media.api:
+    image: ${DOCKER_REGISTRY-}mediaapi
+    build:
+      context: .
+      dockerfile: Media.Api/Dockerfile
+
+
+  notification.api:
+    image: ${DOCKER_REGISTRY-}notificationapi
+    build:
+      context: .
+      dockerfile: Notification.Api/Dockerfile
+
+
+  user.api:
+    image: ${DOCKER_REGISTRY-}userapi
+    build:
+      context: .
+      dockerfile: User.Api/Dockerfile
+
+
+  user.grpc:
+    image: ${DOCKER_REGISTRY-}usergrpc
+    build:
+      context: .
+      dockerfile: User.Grpc/Dockerfile
+
+
+volumes:
+  mssql-data:
+  redis_data:
+  rabbitmq_data:
+  amongo_data:
