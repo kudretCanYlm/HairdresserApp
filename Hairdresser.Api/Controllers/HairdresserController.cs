@@ -37,10 +37,10 @@ namespace Hairdresser.Api.Controllers
 			return Ok(result);
 		}
 
-		[HttpGet,Route("GetHairdresser/{guid:id}")]
+		[HttpGet,Route("GetHairdresser/{id:guid}")]
 		public async Task<IActionResult> GetHairdresser(Guid id)
 		{
-			var result=await _hairdresserAppService.GetHairdresserById(id);
+			var result=await _hairdresserAppService.GetHairdresserWithImageById(id);
 
 			return Ok(result);
 		}

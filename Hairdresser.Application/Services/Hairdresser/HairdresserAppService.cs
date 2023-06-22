@@ -86,6 +86,18 @@ namespace Hairdresser.Application.Services.Hairdresser
 			return hairdressersWithImage;
 		}
 
+		public async Task<HairdresserImageDto> GetHairdresserWithImageById(Guid id)
+		{
+			var hairdresser=await GetHairdresserById(id);
+			var hairdresserWithImage = _mapper.Map<HairdresserImageDto>(hairdresser);
+
+			var image = await _mediaGrpcService.GetMediaByOwnerIdAndTypeAsync(hairdresser.Id, MediaTypes.HAIRDRESSER_SINGLE);
+			
+			hairdresserWithImage.Base64Media= image.Base64Media;
+
+			return hairdresserWithImage;
+		}
+
 		public async Task<bool> CheckHairdresserByIdAndUserId(Guid id, Guid userId)
 		{
 			var query=new CheckHairdresserIdAndUserIdQuery(id, userId);
@@ -107,6 +119,7 @@ namespace Hairdresser.Application.Services.Hairdresser
 		{
 			GC.SuppressFinalize(this);
 		}
+
 
 	}
 }

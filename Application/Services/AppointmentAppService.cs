@@ -131,7 +131,7 @@ namespace Appointment.Application.Services
 			return _mapper.Map<IEnumerable<AppointmentDto>>(result);
 		}
 
-		public Task<IEnumerable<AppointmentDto>> GetApprovedAppointmentsByHairdresserId(Guid hairdresserId)
+		public async Task<IEnumerable<AppointmentDto>> GetApprovedAppointmentsByHairdresserId(Guid hairdresserId)
 		{
 			var result = await _mediator.Send(new GetApprovedAppointmentsByHairdresserIdQuery(hairdresserId));
 

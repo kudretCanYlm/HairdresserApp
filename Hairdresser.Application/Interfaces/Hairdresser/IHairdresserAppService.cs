@@ -12,6 +12,7 @@ namespace Hairdresser.Application.Interfaces.Hairdresser
 		Task<IEnumerable<HairdresserImageDto>> GetAllHairdresserByFilter(PageSearchArgs pageSearchArgs);
 		Task<IEnumerable<HairdresserDto>> GetAllHairdressers();
 		Task<HairdresserDto> GetHairdresserById(Guid id);
+		Task<HairdresserImageDto> GetHairdresserWithImageById(Guid id);
 		//Task<IEnumerable<HairdresserWithImageDto>> GetHairdresserByPagedList(PageSearchArgs args);
 		Task<ValidationResult> CreateAsync(CreateHairdresserDto createHairdresserDto);
 		Task<ValidationResult> UpdateAsync(UpdateHairdresserDto updateHairdresserDto);
