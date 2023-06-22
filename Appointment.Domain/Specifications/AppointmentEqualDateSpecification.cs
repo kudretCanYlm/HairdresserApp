@@ -8,8 +8,6 @@ namespace Appointment.Domain.Specifications
 	{
 		public DateTime AppointmentDate { get; set; }
 
-		
-
 		public AppointmentEqualDateSpecification(DateTime appointmentDate)
 		{
 			AppointmentDate = appointmentDate;

@@ -52,5 +52,20 @@ namespace Hairdresser.GRPC.Services
 
 			return result;
 		}
+
+		public override async Task<GetHairdresserModel> GetHairdresserById(GetHairdresserByIdRequest request, ServerCallContext context)
+		{
+			var hairdresser = await _hairdresserAppService.GetHairdresserById(Guid.Parse(request.HairdresserId));
+
+			var result = new GetHairdresserModel
+			{
+				Id = hairdresser.Id.ToString(),
+				Name = hairdresser.Name
+			};
+
+			return result;
+		}
+
+		
 	}
 }

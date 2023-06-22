@@ -114,6 +114,29 @@ namespace Appointment.Application.Services
 
 			return _mapper.Map<IEnumerable<GetAllAppointmentsForUserDto>>(appointments);
 
-	}
+		}
+
+		public async Task<IEnumerable<AppointmentDto>> GetAppointmentsByHairdresserId(Guid hairdresserId)
+		{
+			var result = await _mediator.Send(new GetAllAppointmentsByHairdresserIdQuery(hairdresserId));
+
+			return _mapper.Map<IEnumerable<AppointmentDto>>(result);
+
+		}
+
+		public async Task<IEnumerable<AppointmentDto>> GetCreatedAppointmentsByHairdresserId(Guid hairdresserId)
+		{
+			var result = await _mediator.Send(new GetCreatedAppointmentsByHairdresserIdQuery(hairdresserId));
+
+			return _mapper.Map<IEnumerable<AppointmentDto>>(result);
+		}
+
+		public Task<IEnumerable<AppointmentDto>> GetApprovedAppointmentsByHairdresserId(Guid hairdresserId)
+		{
+			var result = await _mediator.Send(new GetApprovedAppointmentsByHairdresserIdQuery(hairdresserId));
+
+			return _mapper.Map<IEnumerable<AppointmentDto>>(result);
+
+		}
 	}
 }

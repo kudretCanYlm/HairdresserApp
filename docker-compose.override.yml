@@ -232,6 +232,7 @@ services:
       - amongo
       - amssql
       - consul_server
+      - hairdresser.api
 
   hairdresserservice.api:
     container_name: hairdresserservice.api
@@ -294,6 +295,7 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     depends_on:
+      - hairdresserservice.api
       - auth.grpc
       - hairdresser.grpc
       - media.grpc
@@ -324,6 +326,7 @@ services:
       - amongo
       - amssql
       - consul_server
+      - media.api
   
   media.api:
     container_name: media.api
@@ -446,3 +449,4 @@ services:
       - media.grpc
       - amongo
       - consul_server
+      - user.api

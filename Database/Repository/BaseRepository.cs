@@ -39,6 +39,7 @@ namespace Database.Repository
 		public virtual void Add(T entity)
 		{
 			entity.CreatedAt = DateTime.Now;
+			entity.ModifiedAt = DateTime.Now;
 			dbSet.Attach(entity);
 			DbContextV.Entry(entity).State= EntityState.Added;
 		}

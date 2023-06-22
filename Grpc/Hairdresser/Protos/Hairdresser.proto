@@ -6,6 +6,7 @@ service HairdresserProtoService{
 	rpc CheckHairdresserIdAndUserId(CheckHairdresserIdAndUserIdRequest) returns (CheckHairdresserModel);
 	rpc CheckHairdresserActive(CheckHairdresserActiveRequest) returns (CheckHairdresserActiveModel);
 	rpc GetHairdresserOwnerId(GetHairdresserOwnerIdRequest) returns (GetHairdresserOwnerIdModel);
+	rpc GetHairdresserById(GetHairdresserByIdRequest) returns (GetHairdresserModel);
 }
 
 message CheckHairdresserIdAndUserIdRequest{
@@ -24,6 +25,10 @@ message GetHairdresserOwnerIdRequest{
 	string HairdresserId=1;
 }
 
+message GetHairdresserByIdRequest{
+	string HairdresserId=1;
+}
+
 message CheckHairdresserModel{
 	bool IsThere=1;
 }
@@ -34,4 +39,9 @@ message CheckHairdresserActiveModel {
 
 message GetHairdresserOwnerIdModel{
 	string OwnerId=1;
+}
+
+message GetHairdresserModel{
+	string Id=1;
+	string Name=2;
 }

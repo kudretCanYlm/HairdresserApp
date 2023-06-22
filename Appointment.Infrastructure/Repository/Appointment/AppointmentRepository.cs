@@ -22,22 +22,25 @@ namespace Appointment.Infrastructure.Repository.Appointment
 
 			var appointmentHairdresserSpecification = new AppointmentHairdresserSpecification(id);
 			var appointmentStateCanceledOrDeniedSpecification = new AppointmentStateCanceledOrDeniedSpecification();
-			var AppointmentTimeConflictSpecification = new AppointmentTimeConflictSpecification(appointmentDate,appointmentStartTime,serviceDuration);
+			var AppointmentTimeConflictSpecification = new AppointmentTimeConflictSpecification(appointmentDate, appointmentStartTime, serviceDuration);
 
-			var combineSpecification = 
+			var combineSpecification =
 				appointmentHairdresserSpecification
 				.And(appointmentStateCanceledOrDeniedSpecification)
 				.And(AppointmentTimeConflictSpecification).Criteria;
 
 
-			var count=await GetManyQuery(combineSpecification).CountAsync();
-			
+			var count = await GetManyQuery(combineSpecification).CountAsync();
+
 			return count == 0 ? false : true;
 		}
 
 		public async Task<IEnumerable<AppointmentModel>> GetAllAppointmentsByUserId(Guid userId)
 		{
-			return await GetMany(x => x.UserId == userId);
+			return await GetManyQuery(x => x.UserId == userId)
+				.OrderByDescending(x => x.ModifiedAt)
+				.ThenByDescending(x => x.CreatedAt)
+				.ToListAsync();
 		}
 
 		public async Task<AppointmentModel> GetAppointmentByIdAndHairdresserId(Guid id, Guid hairdresserId)

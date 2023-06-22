@@ -8,6 +8,9 @@ namespace Appointment.Application.Interfaces.Appointment
 	{
 		Task<AppointmentDto> GetAppointmentById(Guid id);
 		Task<IEnumerable<AppointmentDto>> GetAllAppointmentsByUserId(Guid userId);
+		Task<IEnumerable<AppointmentDto>> GetAppointmentsByHairdresserId(Guid hairdresserId);
+		Task<IEnumerable<AppointmentDto>> GetCreatedAppointmentsByHairdresserId(Guid hairdresserId);
+		Task<IEnumerable<AppointmentDto>> GetApprovedAppointmentsByHairdresserId(Guid hairdresserId);
 		Task<AppointmentDto> GetAppointmentByIdAndUserId(Guid id,Guid userId);
 		Task<IEnumerable<GetAllAppointmentsForUserDto>> GetAllAppointmentsForUser(GetAllAppointmentsForUserPostDto getAllAppointmentsForUserPostDto);
 		Task<ValidationResult> ApproveAppointment(AppointmentStateHairdresserDto appointmentStateHairdresserDto);

@@ -12,7 +12,10 @@ namespace Appointment.Domain.Queries.Appointment
 	public class AppointmentQueryHandler : IRequestHandler<GetAllAppointmentsByUserIdQuery, IEnumerable<AppointmentModel>>,
 										IRequestHandler<GetAppointmentByIdAndUserIdQuery, AppointmentModel>,
 										IRequestHandler<GetAppointmentByIdQuery, AppointmentModel>,
-										IRequestHandler<GetAllAppointmentsForUserQuery, IEnumerable<AppointmentModel>>
+										IRequestHandler<GetAllAppointmentsForUserQuery, IEnumerable<AppointmentModel>>,
+										IRequestHandler<GetAllAppointmentsByHairdresserIdQuery, IEnumerable<AppointmentModel>>,
+										IRequestHandler<GetCreatedAppointmentsByHairdresserIdQuery, IEnumerable<AppointmentModel>>,
+										IRequestHandler<GetApprovedAppointmentsByHairdresserIdQuery, IEnumerable<AppointmentModel>>
 	{
 		private readonly IAppointmentRepository _appointmentRepository;
 
@@ -58,6 +61,54 @@ namespace Appointment.Domain.Queries.Appointment
 				appointmentHairdresserSpecification
 				.And(appointmentStateCanceledOrDeniedSpecification)
 				.And(appointmentEqualDateSpecification).Criteria)
+				.OrderBy(x=>x.AppointmentStartTime)
+				.ToListAsync();
+
+			return appointments;
+		}
+
+		public async Task<IEnumerable<AppointmentModel>> Handle(GetAllAppointmentsByHairdresserIdQuery request, CancellationToken cancellationToken)
+		{
+			var appointmentHairdresserSpecification = new AppointmentHairdresserSpecification(request.HairdresserId);
+
+			var appointmets=await _appointmentRepository.GetManyQuery(
+				appointmentHairdresserSpecification.Criteria)
+				.OrderByDescending(x=>x.ModifiedAt)
+				.ThenByDescending(x=>x.CreatedAt) 
+				.ToListAsync();
+			
+			return appointmets;
+
+		}
+
+		public async Task<IEnumerable<AppointmentModel>> Handle(GetCreatedAppointmentsByHairdresserIdQuery request, CancellationToken cancellationToken)
+		{
+			var appointmentHairdresserSpecification = new AppointmentHairdresserSpecification(request.HairdresserId);
+			var appointmentSingleStateSpecification = new AppointmentSingleStateSpecification(AppointmentStateEnum.Created);
+
+			var appointments = await _appointmentRepository.GetManyQuery(
+				appointmentHairdresserSpecification
+				.And(appointmentSingleStateSpecification).Criteria)
+				.OrderByDescending(x => x.CreatedAt)
+				.ToListAsync();
+
+			return appointments;
+		}
+
+		public async Task<IEnumerable<AppointmentModel>> Handle(GetApprovedAppointmentsByHairdresserIdQuery request, CancellationToken cancellationToken)
+		{
+			var appointmentHairdresserSpecification = new AppointmentHairdresserSpecification(request.HairdresserId);
+			var appointmentSingleStateSpecification = new AppointmentSingleStateSpecification(AppointmentStateEnum.Approved);
+			var appointmentEqualDateSpecification = new AppointmentEqualDateSpecification(DateTime.Now);
+			var appointmentEqualTimeSpecification = new AppointmentEqualTimeSpecification(DateTime.Now);
+
+			var appointments = await _appointmentRepository.GetManyQuery(
+				appointmentHairdresserSpecification
+				.And(appointmentSingleStateSpecification)
+				.And(appointmentEqualDateSpecification)
+				.And(appointmentEqualTimeSpecification)
+				.Criteria)
+				.OrderByDescending(x => x.CreatedAt)
 				.ToListAsync();
 
 			return appointments;
