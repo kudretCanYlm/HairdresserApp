@@ -88,7 +88,7 @@ namespace Hairdresser.Application.Services.Hairdresser
 
 		public async Task<HairdresserImageDto> GetHairdresserWithImageById(Guid id)
 		{
-			var hairdresser=await GetHairdresserById(id);
+			var hairdresser=await _mediator.Send(new GetHairdresserByIdQuery(id));
 			var hairdresserWithImage = _mapper.Map<HairdresserImageDto>(hairdresser);
 
 			var image = await _mediaGrpcService.GetMediaByOwnerIdAndTypeAsync(hairdresser.Id, MediaTypes.HAIRDRESSER_SINGLE);
