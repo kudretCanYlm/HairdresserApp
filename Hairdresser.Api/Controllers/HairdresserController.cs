@@ -37,6 +37,14 @@ namespace Hairdresser.Api.Controllers
 			return Ok(result);
 		}
 
+		[HttpGet,Route("GetHairdresser/{guid:id}")]
+		public async Task<IActionResult> GetHairdresser(Guid id)
+		{
+			var result=await _hairdresserAppService.GetHairdresserById(id);
+
+			return Ok(result);
+		}
+
 		[HttpPost, Route("GetAllHairdressersByUserAddress")]
 		public async Task<IActionResult> GetAllHairdressersByUserAddress([FromBody] PageSearchArgs pageSearchArgs)
 		{
