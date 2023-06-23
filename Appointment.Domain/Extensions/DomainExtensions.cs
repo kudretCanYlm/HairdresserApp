@@ -51,7 +51,8 @@ namespace Appointment.Domain.Extensions
 			services.AddScoped<IRequestHandler<GetAllAppointmentsForUserQuery, IEnumerable<AppointmentModel>>, AppointmentQueryHandler>();
 			services.AddScoped<IRequestHandler<GetCreatedAppointmentsByHairdresserIdQuery, IEnumerable<AppointmentModel>>, AppointmentQueryHandler>();
 			services.AddScoped<IRequestHandler<GetApprovedAppointmentsByHairdresserIdQuery, IEnumerable<AppointmentModel>>, AppointmentQueryHandler>();
-
+			services.AddScoped<IRequestHandler<GetAllAppointmentsByHairdresserIdQuery, IEnumerable<AppointmentModel>>, AppointmentQueryHandler>();
+			
 
 		}
 	}
