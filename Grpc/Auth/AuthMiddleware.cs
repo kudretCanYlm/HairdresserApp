@@ -45,6 +45,7 @@ namespace Grpc.Auth
 					var claims = new[]
 					{
 							new Claim(ClaimTypes.NameIdentifier, user.UserId),
+							new Claim(ClaimTypes.Authentication,token),
 							new Claim(ClaimTypes.Role, "Admin")
 						};
 					var identity = new ClaimsIdentity(claims, "Bearer");
