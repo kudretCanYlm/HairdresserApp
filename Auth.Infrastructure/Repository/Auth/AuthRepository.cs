@@ -2,6 +2,7 @@
 using Auth.Domain.Models;
 using Database.Repository.Redis;
 using Microsoft.Extensions.Logging;
+using ZstdSharp.Unsafe;
 
 namespace Auth.Infrastructure.Repository.Auth
 {
@@ -19,7 +20,7 @@ namespace Auth.Infrastructure.Repository.Auth
 		public async Task<AuthSessionModel> CreateTokenAsync(Guid UserId)
 		{
 			var authModel = new AuthSessionModel(UserId, DateTime.Now.AddDays(30));
-			var result=await _redisBaseRepository.InsertAsync(authModel.GenerateToken());
+			var result = await _redisBaseRepository.InsertAsync(authModel.GenerateToken());
 			await _redisBaseRepository.AddExpire(result, TimeSpan.FromDays(30));
 
 			return authModel;
@@ -27,22 +28,28 @@ namespace Auth.Infrastructure.Repository.Auth
 
 		public async Task<bool> DeleteTokenAsync(string token)
 		{
+
+			var model = await _redisBaseRepository.GetSingle(x => x.Token == token);
+
+			if (model == null)
+				return false;
+
 			try
 			{
-				await _redisBaseRepository.DeleteWhere(x => x.Token == token);
+				await _redisBaseRepository.DeleteAsync(model);
 				return true;
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"token didn't delete : ${token}");
+				_logger.LogError($"token didn't delete : ${token} ,Error :${ex.Message}");
 				return false;
 			}
 		}
 
 		public async Task<IEnumerable<AuthSessionModel>> GetAllTokensAsync(Guid tokenOwner)
 		{
-			var models= await _redisBaseRepository.GetAllByWhereAsync(x => x.TokenOwnerId==tokenOwner);
-			
+			var models = await _redisBaseRepository.GetAllByWhereAsync(x => x.TokenOwnerId == tokenOwner);
+
 			return models;
 		}
 
@@ -51,7 +58,7 @@ namespace Auth.Infrastructure.Repository.Auth
 			var model = await _redisBaseRepository.GetSingle(x => x.Token == token);
 			if (model == null)
 				return null;
-			model.TokenExpiringTime= DateTime.Now.AddDays(30);
+			model.TokenExpiringTime = DateTime.Now.AddDays(30);
 			await _redisBaseRepository.UpdateAsync(model);
 			await _redisBaseRepository.AddExpire(nameof(AuthSessionModel) + ":" + model.Id, TimeSpan.FromDays(30));
 
