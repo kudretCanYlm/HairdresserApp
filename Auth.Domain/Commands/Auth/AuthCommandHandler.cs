@@ -26,7 +26,11 @@ namespace Auth.Domain.Commands.Auth
 
 		public async Task<ValidationResult> Handle(LogoutCommand request, CancellationToken cancellationToken)
 		{
-			await _authRepository.DeleteTokenAsync(request.Token);
+			var result= await _authRepository.DeleteTokenAsync(request.Token);
+
+			if (!result)
+				AddError("Token Not Found");
+
 			return ValidationResult;
 		}
 
