@@ -48,7 +48,17 @@ namespace User.Api.Controllers
 			
 			return Ok(token);
 		}
-		//test et
+
+		[HttpPost,Route("Logout")]
+		public async Task<IActionResult> Logout()
+		{
+			var token = HttpContext.GetCurrentUserToken();
+
+			var result = await _authGrpcService.DeleteUserToken(token);
+
+			return Ok(result.IsDelete);
+		}
+
 		[HttpGet,Route("CheckUserAddress")]
 		public async Task<IActionResult> CheckUserAddress()
 		{
