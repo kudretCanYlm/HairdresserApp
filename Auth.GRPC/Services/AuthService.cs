@@ -41,5 +41,15 @@ namespace Auth.GRPC.Services
 				Token = result.Token
 			};
 		}
+
+		public override async Task<DeleteTokenResponse> DeleteToken(DeleteTokenRequest request, ServerCallContext context)
+		{
+			var result=await _authAppService.DeleteToken(request.Token);
+
+			return new DeleteTokenResponse
+			{
+				IsDelete = result.IsValid
+			};
+		}
 	}
 }

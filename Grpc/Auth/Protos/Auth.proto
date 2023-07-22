@@ -5,6 +5,7 @@ option csharp_namespace = "Grpc.Auth.Protos";
 service AuthProtoService{
 	rpc GetUser (GetUserRequest) returns (UserModel);
 	rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+	rpc DeleteToken(DeleteTokenRequest) returns (DeleteTokenResponse);
 }
 
 
@@ -24,4 +25,13 @@ message CreateUserRequest{
 
 message CreateUserResponse{
 	string token=1;
+}
+
+////////////////////
+message DeleteTokenRequest{
+	string token=1;
+}
+
+message DeleteTokenResponse{
+	bool isDelete=1;
 }

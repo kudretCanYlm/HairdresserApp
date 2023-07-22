@@ -3,6 +3,7 @@ using Auth.Application.Interfaces.Auth;
 using Auth.Domain.Commands.Auth;
 using Auth.Domain.Interfaces.Auth;
 using AutoMapper;
+using FluentValidation.Results;
 using MediatR;
 using NetDevPack.Mediator;
 
@@ -36,9 +37,11 @@ namespace Auth.Application.Services.Auth
 			return _mapper.Map<UserAuthSessionDto>(result);
 		}
 
-		public async Task DeleteToken(string token)
+		public async Task<ValidationResult> DeleteToken(string token)
 		{
-			await _mediatorNet.SendCommand(new LogoutCommand(token));
+			var result= await _mediatorNet.SendCommand(new LogoutCommand(token));
+
+			return result;
 		}
 
 		public async Task<IEnumerable<UserAuthSessionDto>> GetAllTokens(Guid userId)

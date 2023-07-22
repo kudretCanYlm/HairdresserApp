@@ -30,5 +30,17 @@ namespace Grpc.Auth.ClientServices
 
 			return response;
 		}
+
+		public async Task<DeleteTokenResponse> DeleteUserToken(string token)
+		{
+			var request = new DeleteTokenRequest
+			{
+				Token = token
+			};
+
+			var response=await _authProtoService.DeleteTokenAsync(request);
+
+			return response;
+		}
 	}
 }
