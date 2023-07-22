@@ -31,5 +31,12 @@ namespace Grpc.Auth
 
 			return null;
 		}
+
+		public static string GetCurrentUserToken(this HttpContext context)
+		{
+			var userToken = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication).Value;
+
+			return userToken;
+		}
 	}
 }
