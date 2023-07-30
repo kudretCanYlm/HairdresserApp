@@ -1,5 +1,6 @@
 using Auth.Application.Extensions;
 using Auth.Domain.Extensions;
+using Auth.GRPC.Mapper;
 using Auth.GRPC.Services;
 using Auth.Infrastructure.Extensions;
 using Common.Consul;
@@ -25,7 +26,7 @@ internal class Program
 		builder.Services.AddSingleton(new RedisConnectionProvider(builder.Configuration["REDIS_CONNECTION_STRING"]));
 		builder.Services.UseAuthApplication();
 		builder.Services.UseAuthInfrastructure();
-
+		builder.Services.AddAutoMapper(typeof(DtoToProtoModel));
 		builder.Services.AddGrpc();
 		builder.Services.AddConsul(builder.Configuration);
 
