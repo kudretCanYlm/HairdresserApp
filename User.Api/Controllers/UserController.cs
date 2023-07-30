@@ -59,6 +59,26 @@ namespace User.Api.Controllers
 			return Ok(result.IsDelete);
 		}
 
+		[HttpGet,Route("GetAllSessions")]
+		public async Task<IActionResult> GetAllSessions()
+		{
+			var userId=HttpContext.GetCurrentUserId();
+
+			var userTokens = await _authGrpcService.GetUserTokensForReviewList((Guid)userId);
+			
+			return Ok(userTokens);
+		}
+
+		[HttpPost,Route("DeleteSession/{id}")]
+		public async Task<IActionResult> DeleteSession(Guid id)
+		{
+			var userId = HttpContext.GetCurrentUserId();
+			
+			var response = await _authGrpcService.DeleteTokenById(id,(Guid) userId);
+
+			return Ok(response);
+		}
+
 		[HttpGet,Route("CheckUserAddress")]
 		public async Task<IActionResult> CheckUserAddress()
 		{
