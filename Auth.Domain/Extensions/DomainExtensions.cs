@@ -22,8 +22,9 @@ namespace Auth.Domain.Extensions
 			// Domain - Commands
 			services.AddScoped<IRequestHandler<LoginCommand, AuthSessionModel>,AuthCommandHandler>();
 			services.AddScoped<IRequestHandler<LogoutCommand,ValidationResult>,AuthCommandHandler>();
+			services.AddScoped<IRequestHandler<DeleteTokenByIdAndUserIdCommand,ValidationResult>,AuthCommandHandler>();
 			services.AddScoped<IRequestHandler<RefreshTokenCommand,AuthSessionModel>,AuthCommandHandler>();
-
+			
 		}
 	}
 }

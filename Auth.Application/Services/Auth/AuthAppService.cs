@@ -44,6 +44,13 @@ namespace Auth.Application.Services.Auth
 			return result;
 		}
 
+		public async Task<ValidationResult> DeleteTokenByIdAndUserId(Guid id, Guid userId)
+		{
+			var result = await _mediator.Send(new DeleteTokenByIdAndUserIdCommand(id, userId));
+
+			return result;
+		}
+
 		public async Task<IEnumerable<UserAuthSessionDto>> GetAllTokens(Guid userId)
 		{
 			var result= await _authRepository.GetAllTokensAsync(userId);

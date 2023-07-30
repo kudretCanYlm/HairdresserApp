@@ -8,7 +8,8 @@ namespace Auth.Domain.Commands.Auth
 {
 	public class AuthCommandHandler : CommandHandler, IRequestHandler<LoginCommand, AuthSessionModel>,
 												   IRequestHandler<LogoutCommand, ValidationResult>,
-												   IRequestHandler<RefreshTokenCommand, AuthSessionModel>
+												   IRequestHandler<RefreshTokenCommand, AuthSessionModel>,
+													IRequestHandler<DeleteTokenByIdAndUserIdCommand, ValidationResult>
 	{
 		private readonly IAuthRepository _authRepository;
 
@@ -34,10 +35,23 @@ namespace Auth.Domain.Commands.Auth
 			return ValidationResult;
 		}
 
+		public async Task<ValidationResult> Handle(DeleteTokenByIdAndUserIdCommand request, CancellationToken cancellationToken)
+		{
+			var result = await _authRepository.DeleteTokenByIdAndUserIdAsync(request.Id,request.UserId);
+
+			if (!result)
+				AddError("Token Not Found");
+
+			return ValidationResult;
+		}
+
+
 		public async Task<AuthSessionModel> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
 		{
 			var result=await _authRepository.RefreshTokenAsync(request.Token);
 			return result;
 		}
+
+
 	}
 }

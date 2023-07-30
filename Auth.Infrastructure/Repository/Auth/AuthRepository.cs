@@ -2,6 +2,7 @@
 using Auth.Domain.Models;
 using Database.Repository.Redis;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using ZstdSharp.Unsafe;
 
 namespace Auth.Infrastructure.Repository.Auth
@@ -42,6 +43,24 @@ namespace Auth.Infrastructure.Repository.Auth
 			catch (Exception ex)
 			{
 				_logger.LogError($"token didn't delete : ${token} ,Error :${ex.Message}");
+				return false;
+			}
+		}
+
+		public async Task<bool> DeleteTokenByIdAndUserIdAsync(Guid id, Guid userId)
+		{
+			var model=await _redisBaseRepository.GetSingle(x=>x.Id==id && x.TokenOwnerId==userId);
+
+			if (model == null)
+				return false;
+
+			try
+			{
+				await _redisBaseRepository.DeleteAsync(model);
+				return true;
+			}
+			catch
+			{
 				return false;
 			}
 		}

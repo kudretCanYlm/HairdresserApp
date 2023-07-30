@@ -6,7 +6,8 @@ namespace Auth.Domain.Interfaces.Auth
     {
         Task<AuthSessionModel> CreateTokenAsync(Guid UserId);
         Task<bool> DeleteTokenAsync(string token);
-        Task<AuthSessionModel> RefreshTokenAsync(string token);
+        Task<bool> DeleteTokenByIdAndUserIdAsync(Guid id, Guid userId);
+		Task<AuthSessionModel> RefreshTokenAsync(string token);
         Task<IEnumerable<AuthSessionModel>> GetAllTokensAsync(Guid tokenOwner);
     }
 }
