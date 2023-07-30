@@ -1,4 +1,6 @@
 ﻿using Auth.Application.Interfaces.Auth;
+using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Auth.Protos;
 using Grpc.Core;
 
@@ -7,10 +9,12 @@ namespace Auth.GRPC.Services
 	public class AuthService : AuthProtoService.AuthProtoServiceBase
 	{
 		IAuthAppService _authAppService;
+		IMapper _mapper;
 
-		public AuthService(IAuthAppService authAppService)
+		public AuthService(IAuthAppService authAppService, IMapper mapper)
 		{
 			_authAppService = authAppService;
+			_mapper = mapper;
 		}
 
 		public override async Task<UserModel> GetUser(GetUserRequest request, ServerCallContext context)
@@ -50,6 +54,31 @@ namespace Auth.GRPC.Services
 			{
 				IsDelete = result.IsValid
 			};
+		}
+
+		public override async Task<DeleteTokenByIdResponse> DeleteTokenById(DeleteTokenByIdRequest request, ServerCallContext context)
+		{
+			var result = await _authAppService.DeleteTokenByIdAndUserId(Guid.Parse(request.TokenId), Guid.Parse(request.UserId));
+
+			return new DeleteTokenByIdResponse 
+			{
+				IsDelete = result.IsValid 
+			};
+
+		}
+
+		public override async Task<GetTokensForReviewListResponse> GetTokensForReview(GetTokensForReviewRequest request, ServerCallContext context)
+		{
+			var result = await _authAppService.GetAllTokens(Guid.Parse(request.UserId));
+
+			var response = _mapper.Map<IEnumerable<GetTokensForReviewResponse>>(result);
+
+			var resposeList = new GetTokensForReviewListResponse();
+
+			resposeList.TokenList.AddRange(response);
+
+			return resposeList;
+			
 		}
 	}
 }

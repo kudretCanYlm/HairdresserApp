@@ -1,11 +1,14 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 option csharp_namespace = "Grpc.Auth.Protos";
 
 service AuthProtoService{
 	rpc GetUser (GetUserRequest) returns (UserModel);
 	rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
 	rpc DeleteToken(DeleteTokenRequest) returns (DeleteTokenResponse);
+	rpc DeleteTokenById(DeleteTokenByIdRequest) returns (DeleteTokenByIdResponse);
+	rpc GetTokensForReview(GetTokensForReviewRequest) returns (GetTokensForReviewListResponse);
 }
 
 
@@ -34,4 +37,28 @@ message DeleteTokenRequest{
 
 message DeleteTokenResponse{
 	bool isDelete=1;
+}
+///////////////////
+message DeleteTokenByIdRequest{
+	string TokenId=1;
+	string UserId=2;
+}
+
+message DeleteTokenByIdResponse{
+	bool isDelete=1;
+}
+
+///////////////////
+message GetTokensForReviewRequest{
+	string userId=1;
+}
+
+message GetTokensForReviewResponse{
+	string tokenId=1;
+	string TokenExpiringTime=2;
+	string tokenTop10=3;
+}
+
+message GetTokensForReviewListResponse{
+	repeated GetTokensForReviewResponse tokenList=1;
 }

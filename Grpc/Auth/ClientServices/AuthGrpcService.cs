@@ -42,5 +42,35 @@ namespace Grpc.Auth.ClientServices
 
 			return response;
 		}
+
+		public async Task<IEnumerable<GetTokensForReviewResponse>> GetUserTokensForReviewList(Guid userId) 
+		{
+			var request = new GetTokensForReviewRequest
+			{
+				UserId = userId.ToString(),
+			};
+
+			var response=await _authProtoService.GetTokensForReviewAsync(request);
+
+			return response.TokenList;
+		}
+
+		public async Task<DeleteTokenByIdResponse> DeleteTokenById(Guid id,Guid userId)
+		{
+			var request = new DeleteTokenByIdRequest
+			{
+				TokenId = id.ToString(),
+				UserId = userId.ToString()
+			};
+
+			var response=await _authProtoService.DeleteTokenByIdAsync(request);
+
+			return response;
+		}
+
+		public Task DeleteTokenById(Guid id, Guid? userId)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
