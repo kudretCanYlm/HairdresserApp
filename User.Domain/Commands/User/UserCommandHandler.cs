@@ -83,15 +83,16 @@ namespace User.Domain.Commands.User
 		{
 			var user = await userRepository.GetById(request.Id);
 
-			user = mapper.Map(request, user);
-
+		
 			if (user == null)
 			{
 				AddError("user not found");
 				return ValidationResult;
 			}
 
-			if (await userRepository.IsEmailAlreadyUsing(request.Email))
+			user = mapper.Map(request, user);
+
+			if (await userRepository.IsEmailAlreadyUsingWithOutMy(request.Email,request.Id))
 			{
 				AddError("The user e-mail has already been taken.");
 				return ValidationResult;
