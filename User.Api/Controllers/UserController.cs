@@ -89,7 +89,18 @@ namespace User.Api.Controllers
 			return Ok(result);
 		}
 
-		
+		[HttpPost,Route("UpdateUserInfo")]
+		public async Task<IActionResult> UpdateUserInfo(UpdateUserDto updateUserDto)
+		{
+			var userId = GrpcAuthExtension.GetCurrentUserId(HttpContext);
+			updateUserDto.Id = (Guid)userId;
+
+			var result=await _userAppService.UpdateAsync(updateUserDto);
+
+			return Ok(result);
+		}
+
+
 		[HttpGet,Route("GetMe")]
 		public async Task<IActionResult> GetMe()
 		{
