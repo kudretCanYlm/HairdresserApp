@@ -8,6 +8,7 @@ namespace User.Domain.Interfaces
 	{
 		Task<UserModel> GetByEmail(string email);
 		Task<bool> IsEmailAlreadyUsing(string email);
+		Task<bool> IsEmailAlreadyUsingWithOutMy(string email,Guid userId);
 		Task<bool> IsUserExist(Guid id);
 
 	}

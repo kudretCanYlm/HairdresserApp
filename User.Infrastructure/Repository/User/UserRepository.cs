@@ -25,6 +25,11 @@ namespace User.Infrastructure.Repository.User
 			return await GetManyQuery(x => x.Email == email).AnyAsync();
 		}
 
+		public async Task<bool> IsEmailAlreadyUsingWithOutMy(string email, Guid userId)
+		{
+			return await GetManyQuery(x => x.Email == email && x.Id!=userId).AnyAsync();
+		}
+
 		public async Task<bool> IsUserExist(Guid id)
 		{
 			return await GetManyQuery(x => x.Id == id).AnyAsync();
